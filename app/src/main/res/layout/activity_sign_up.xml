@@ -86,7 +86,7 @@
         app:srcCompat="@drawable/bar" />
 
     <ImageView
-        android:id="@+id/btnRegiter"
+        android:id="@+id/btnregister"
         android:layout_width="172dp"
         android:layout_height="69dp"
         android:layout_marginTop="32dp"

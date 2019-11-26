@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hfad.alarmapplicaion.ui.main.SectionsPagerAdapter;
+
+
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
+    FirebaseDatabase firebaseDatabase =FirebaseDatabase.getInstance();
 
     ViewPager viewPager;
     @Override

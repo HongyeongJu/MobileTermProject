@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "162430263849",
+    "firebase_url": "https://alarmapplicaion.firebaseio.com",
+    "project_id": "alarmapplicaion",
+    "storage_bucket": "alarmapplicaion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162430263849:android:bbb4d790f5fb41214eb238",
+        "android_client_info": {
+          "package_name": "com.hfad.alarmapplicaion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162430263849-qj11pov92ssb3of64ou50s67scdl9ii8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hfad.alarmapplicaion",
+            "certificate_hash": "38ad5dbffbc4d0e0dfb7a4f1e9c0885e95e18653"
+          }
+        },
+        {
+          "client_id": "162430263849-hs9er32pg67e5qm8itiepnjvav1qi7pi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQoQGcZ9WhzW_ALT1aWOLCOyv8djzM5Kw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "162430263849-hs9er32pg67e5qm8itiepnjvav1qi7pi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
