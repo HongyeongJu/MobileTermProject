@@ -3,6 +3,7 @@ package com.hfad.alarmapplicaion.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.hfad.alarmapplicaion.R;
-import com.hfad.alarmapplicaion.model.GroupMember;
+import com.hfad.alarmapplicaion.model.RoomPeople;
 
 import java.util.ArrayList;
 
-public class GroupMemberListAdapter extends ArrayAdapter<GroupMember>
+public class GroupMemberListAdapter extends ArrayAdapter<RoomPeople>
 {
     Context context;
     int resId;
-    ArrayList<GroupMember> datas;
-    public GroupMemberListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<GroupMember> datas) {
+    ArrayList<RoomPeople> datas;
+    public GroupMemberListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<RoomPeople> datas) {
         super(context, resource, datas);
 
         this.context = context;
@@ -33,6 +34,8 @@ public class GroupMemberListAdapter extends ArrayAdapter<GroupMember>
 
     @Override
     public int getCount() {
+        Log.d("datasSize", String.valueOf(datas.size()));
+
         return datas.size();
     }
 
@@ -50,15 +53,20 @@ public class GroupMemberListAdapter extends ArrayAdapter<GroupMember>
 
         ImageView photoImageView = holder.imageView;
         TextView nameView = holder.nameView;
-        TextView stateMessageView = holder.stateMessageView;
+      //  TextView stateMessageView = holder.stateMessageView;
         View isWakeView = holder.isWakeView;
 
-        GroupMember data = datas.get(position);
+        RoomPeople data = datas.get(position);
 
-        photoImageView.setImageResource(data.imageUrl);
-        nameView.setText(data.name);
-        stateMessageView.setText(data.stateMessage);
-        if(data.isWake){
+        //gender가 false면 남자
+        if(data.gender){
+            photoImageView.setImageResource(R.drawable.man);
+        }else{// true면 여자
+            photoImageView.setImageResource(R.drawable.woman);
+        }
+        nameView.setText(data.id);  // 일단 이름이아니라 id를 사용
+        //stateMessageView.setText(data.stateMessage);  상태메시지
+        if(data.isTurnOff){
             isWakeView.setBackgroundColor(Color.BLUE);
         }else
         {
@@ -71,13 +79,13 @@ public class GroupMemberListAdapter extends ArrayAdapter<GroupMember>
     class GroupMemeberHolder {
         public ImageView imageView;
         public TextView nameView;
-        public TextView stateMessageView;
+      //  public TextView stateMessageView;
         public View isWakeView;
 
         public GroupMemeberHolder(View root){
             imageView = (ImageView)root.findViewById(R.id.photoimageview);
             nameView = (TextView)root.findViewById(R.id.nametextview);
-            stateMessageView = (TextView)root.findViewById(R.id.statemessagetextview);
+        //    stateMessageView = (TextView)root.findViewById(R.id.statemessagetextview);
             isWakeView = (View)root.findViewById(R.id.iswakeview);
         }
     }

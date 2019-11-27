@@ -9,21 +9,22 @@
     android:padding="30dp">
 
     <TextView
+        android:id="@+id/alarmRoomTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="알람방1"
-        android:textSize="40dp"
         android:layout_gravity="center"
-        android:layout_marginBottom= "30dp"
-        />
+        android:layout_marginBottom="30dp"
+        android:text="알람방1"
+        android:textSize="40dp" />
 
     <TextView
+        android:id="@+id/alarmTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="8 : 00"
-        android:textSize = "40dp"
         android:layout_gravity="center"
-        android:layout_marginBottom= "30dp"/>
+        android:layout_marginBottom="30dp"
+        android:text="8 : 00"
+        android:textSize="40dp" />
 
     <ListView
         android:id="@+id/grouplistview"

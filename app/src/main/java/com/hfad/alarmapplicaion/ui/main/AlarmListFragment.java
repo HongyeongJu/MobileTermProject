@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,6 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
             }
         });
         listView = view.findViewById(R.id.alarmList);
-        listView.setOnItemClickListener(this);
         adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);
 
 
@@ -74,6 +74,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
 
         listView.setAdapter(adapter);       // 어뎁터 설정한다.
+        listView.setOnItemClickListener(this);
     }
 
     @Override
@@ -88,10 +89,20 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         mFirebaseSystem.getAlarmRoomList();     // 알람룸 갱신
     }
 
+    // 리스트의 개별 아이템을 선택했을 때 호출되는 메소드
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getContext(), AlarmRoomActivity.class);
-        startActivity(intent);
+        Log.d("adapterSize", String.valueOf(adapter.getCount()));
+        if(adapter.getCount() >0){
+            //ChatRoom chat = (ChatRoom)adapter.getItem(position);
+
+            ChatRoom chat = (ChatRoom)chats.get(position);
+
+            Intent intent = new Intent(getContext(), AlarmRoomActivity.class);
+            intent.putExtra("chatRoom", chat);
+            startActivity(intent);
+        }
+
     }
 
     // 알람방 리스트를 받기위한 브로드캐스트 리시버
@@ -102,8 +113,9 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
             if(action.equals("getAlarmList")){
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("alarmList");      // ArrayList 데이터를 받는다.
                 adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);        // 새롭게 ArrayList 어뎁터를 만들어서
-                listView.setAdapter(adapter);                                                   // 새롭게 listView에 어댑터를 적용한다.
+                listView.setAdapter(adapter);// 새롭게 listView에 어댑터를 적용한다.
             }
+            //Log.d("adapterSize", String.valueOf(adapter.getCount()));
         }
     };
 }
