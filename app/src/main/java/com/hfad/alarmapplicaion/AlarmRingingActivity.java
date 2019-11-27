@@ -14,7 +14,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_ringing);
-
+    //
         checkButton = (Button)findViewById(R.id.checkingbutton);
 
         checkButton.setOnClickListener(new View.OnClickListener() {
