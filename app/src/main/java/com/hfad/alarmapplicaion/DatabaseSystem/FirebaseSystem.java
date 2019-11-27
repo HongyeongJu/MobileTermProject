@@ -16,6 +16,8 @@ import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
 
+import java.util.ArrayList;
+
 // Firebase에 대한 접근과 이에 대한 함수 제공.
 public class FirebaseSystem  {
 
@@ -167,6 +169,31 @@ public class FirebaseSystem  {
     }
 
 
+    public void getAlarmRoomList(){
+
+        mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<ChatRoom> chats = new ArrayList<>();
+                for(DataSnapshot postSnapshot :dataSnapshot.getChildren()){
+                    ChatRoom chatRoom = (ChatRoom)postSnapshot.getValue(ChatRoom.class);
+
+                    //Log.d("chatRoom", chatRoom.roomTitle);
+                    chats.add(chatRoom);
+                }
+                Intent intent = new Intent("getAlarmList");
+                intent.putExtra("alarmList", chats);
+                mContext.sendBroadcast(intent);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     public void addChatRoom(final ChatRoom chatRoom){
 

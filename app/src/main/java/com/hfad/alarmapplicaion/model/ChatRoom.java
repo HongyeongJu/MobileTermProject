@@ -1,8 +1,9 @@
 package com.hfad.alarmapplicaion.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ChatRoom {
+public class ChatRoom implements Serializable {
 
     public String roomTitle;       // 방제목
     public int hour;           // 시

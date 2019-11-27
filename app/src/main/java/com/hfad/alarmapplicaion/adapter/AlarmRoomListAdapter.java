@@ -10,17 +10,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.hfad.alarmapplicaion.R;
-import com.hfad.alarmapplicaion.model.AlarmRoom;
+import com.hfad.alarmapplicaion.model.ChatRoom;
 
 import java.util.ArrayList;
 
-public class AlarmRoomListAdapter extends ArrayAdapter<AlarmRoom> {
+public class AlarmRoomListAdapter extends ArrayAdapter<ChatRoom> {
 
     Context context;
     int resId;
-    ArrayList<AlarmRoom> datas;
+    ArrayList<ChatRoom> datas;
 
-    public AlarmRoomListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<AlarmRoom> datas) {
+    public AlarmRoomListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<ChatRoom> datas) {
         super(context, resource);
 
         this.context = context;
@@ -48,10 +48,10 @@ public class AlarmRoomListAdapter extends ArrayAdapter<AlarmRoom> {
         TextView alarmRoomTitleView = holder.titleView;
         TextView alarmRoomTimeView = holder.timeView;
 
-        final AlarmRoom data = datas.get(position);
+        final ChatRoom data = datas.get(position);
 
-        alarmRoomTitleView.setText(data.roomName);
-        alarmRoomTimeView.setText(data.time);
+        alarmRoomTitleView.setText(data.roomTitle);
+        alarmRoomTimeView.setText(data.hour + ":" + data.minute);
 
         return convertView;
     }
