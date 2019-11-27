@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +20,8 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseSystem firebaseSystem;
 
+    User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,24 +34,13 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = firebaseSystem.getUser(idEditText.getText().toString());
 
-                // 등록된 유저가 없으면
-                if(user == null){
-                    Toast.makeText(getApplicationContext(), "등록된 유저가 아닙니다.", Toast.LENGTH_SHORT).show();
-                }else {
-                    // 비밀번호가 같은지 다른지 확인
-                    if(user.password.equals(pwEditText.getText().toString())){// 같으면
-                        Toast.makeText(getApplicationContext(), user.id +"님 접속하셨습니다." , Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        Toast.makeText(getApplicationContext(), "비밀번호가 다릅니다. " , Toast.LENGTH_SHORT).show();
-                    }
-                }
+                firebaseSystem.login(idEditText.getText().toString(), pwEditText.getText().toString());
+
             }
         });
 

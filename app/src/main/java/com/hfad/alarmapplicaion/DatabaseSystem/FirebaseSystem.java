@@ -1,6 +1,7 @@
 package com.hfad.alarmapplicaion.DatabaseSystem;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.User;
 
 // Firebase에 대한 접근과 이에 대한 함수 제공.
@@ -75,6 +77,42 @@ public class FirebaseSystem  {
         return isuserId;
     }
 
+
+    public boolean login(String id, final String password){
+        mUsersDatabaseReference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){      // id가 있는지 없는지 확인한다.
+                    // 비밀번호가 같은지 확인한다.
+                    User user = dataSnapshot.getValue(User.class);
+                    if(user!= null){
+                        Log.d("password", user.password);
+                        if(user.password.equals(password)){
+                            Toast.makeText(mContext, "로그인 성공", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            mContext.startActivity(intent);
+
+
+                            // 서비스 시작 (Session 서비스)
+
+                        }else {
+                            Toast.makeText(mContext, "비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }else { // Id가 없다면.
+                    Toast.makeText(mContext, "Id가 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return true;
+    }
 
     public User getUser(String id){
 
