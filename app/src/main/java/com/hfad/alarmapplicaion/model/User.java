@@ -8,13 +8,15 @@ public class User implements Serializable {
     public String password;
     public int totalPoint;
     public int point;
+    public boolean gender = false;
 
-    public User(String name, String id, String passward, int totalPoint, int point){
+    public User(String name, String id, String passward, int totalPoint, int point, boolean gender){
         this.name = name;
         this.id = id;
         this.password = passward;
         this.totalPoint = totalPoint;
         this.point = point;
+        this.gender = gender;
     }
 
     public User(){
@@ -23,6 +25,7 @@ public class User implements Serializable {
         password = null;
         totalPoint = 0;
         point = 0;
+        gender = false;
     }
 
 

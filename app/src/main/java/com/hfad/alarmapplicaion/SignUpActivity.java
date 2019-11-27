@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +23,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseSystem mFirebaseSystem;
     private FirebaseDatabase mFirebaseDatabase;      // 파이어베이스 객체
     private DatabaseReference mUsersDatabaseReference;       // User테이블 객체
+    RadioButton maleButton;
+    RadioButton femaleButton;
+    boolean gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         idEditText = findViewById(R.id.user_id);
         passwordEditText = findViewById(R.id.password);
         btnRegister =  (ImageView)findViewById(R.id.btnregister);
+        maleButton = (RadioButton)findViewById(R.id.malebtn);
+        femaleButton = (RadioButton)findViewById(R.id.femalebtn);
+
+
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();     // Firebase 객체 얻기
@@ -40,9 +48,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         btnRegister.setOnClickListener(this);
 
 
+        maleButton.setOnClickListener(this);
+        femaleButton.setOnClickListener(this);
     }
 
-    boolean isHim = false;
     @Override
     public void onClick(View v) {
         String id = idEditText.getText().toString();
@@ -64,10 +73,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
              */
 
-            User user = new User(name, id, password, 0, 0);
+            User user = new User(name, id, password, 0, 0, gender);
             mFirebaseSystem.addUser(user);
             finish();
 
+        }else if(v.getId() == R.id.malebtn){        // 남성은 false
+            gender = false;
+        }else if(v.getId() == R.id.femalebtn)       // 여성은 true
+        {
+            gender = true;
         }
     }
 
