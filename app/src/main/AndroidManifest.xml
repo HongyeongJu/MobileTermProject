@@ -30,6 +30,12 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
+        <service android:name=".service.SessionService"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
     </application>
 
 </manifest>

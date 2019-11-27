@@ -1,5 +1,9 @@
 package com.hfad.alarmapplicaion;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -7,12 +11,21 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
+import com.hfad.alarmapplicaion.model.ChatRoom;
+import com.hfad.alarmapplicaion.model.RoomPeople;
+import com.hfad.alarmapplicaion.model.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class AlarmSettingActivity extends AppCompatActivity implements View.OnClickListener , CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener {
 
+
+    User myUserInfo;
 
     EditText mRoomName;
     TimePicker mTimePicker;
@@ -28,12 +41,15 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     int hourOfDay = 0;
     int minute = 0;
 
+    private FirebaseSystem mFirebaseSystem;
+
     boolean[] days = new boolean[7];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_setting);
 
+        mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         mRoomName = (EditText)findViewById(R.id.roomName);
         mTimePicker=  (TimePicker)findViewById(R.id.timePicker);
         mMonday = (CheckBox)findViewById(R.id.monday);
@@ -59,12 +75,35 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         mTimePicker.setMinute(minute);
         mTimePicker.setOnTimeChangedListener(this);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("putUser");
+        registerReceiver(getUserReceiver, filter);
+
+
+
+        Intent getUserIntent = new Intent("getUser");
+        sendBroadcast(getUserIntent);       // 현재 유저 정보를 업데이트 하라고 부탁함.
+
+
+
     }
 
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.settingbutton){
-            Toast.makeText(getApplicationContext(), "hour"  +String.valueOf(hourOfDay) ,Toast.LENGTH_SHORT).show();
+            String title = mRoomName.getText().toString();
+            int hour = hourOfDay;
+            int min = minute;
+            String owner = myUserInfo.id;
+            List<RoomPeople> people= new ArrayList<>();
+            people.add(new RoomPeople(owner, false));
+            people.add(new RoomPeople("테스트", false));
+
+            ChatRoom chatRoom = new ChatRoom(title, hour, min, owner, people, days[0], days[1], days[2], days[3], days[4], days[5], days[6]);
+
+            mFirebaseSystem.addChatRoom(chatRoom);
+
+            finish();
         }
     }
 
@@ -100,4 +139,19 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         this.hourOfDay = hourOfDay;
         this.minute = minute;
     }
+
+
+    // 유저 정보를 받아오는 리시버
+    BroadcastReceiver getUserReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(action == "putUser"){
+                myUserInfo = (User)intent.getSerializableExtra("user");
+            }
+        }
+    };
+
+
 }

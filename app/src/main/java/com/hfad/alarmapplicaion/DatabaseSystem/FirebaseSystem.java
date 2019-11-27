@@ -13,8 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hfad.alarmapplicaion.MainActivity;
+import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
-import com.hfad.alarmapplicaion.service.SessionService;
 
 // Firebase에 대한 접근과 이에 대한 함수 제공.
 public class FirebaseSystem  {
@@ -89,21 +89,13 @@ public class FirebaseSystem  {
                     if(user!= null){
                         Log.d("password", user.password);
                         if(user.password.equals(password)){
+
+                            // 유저 정보를 넘겨주면서 메인 액티비티로 이동
                             Toast.makeText(mContext, "로그인 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext, MainActivity.class);
+                            intent.putExtra("user", user);
                             mContext.startActivity(intent);
 
-
-                            // 서비스 시작 (Session 서비스)
-
-                            // 로그인 정보를 가지고 있는 서비스.
-                            Intent intent1 = new Intent(mContext, SessionService.class);
-                            intent1.putExtra("id", user.id);
-                            intent1.putExtra("pw", user.password);
-                            intent1.putExtra("name", user.name);
-                            intent1.putExtra("totalPoint", user.totalPoint);
-                            intent1.putExtra("point", user.point);
-                            mContext.startService(intent1);         // 세션 시작
 
                         }else {
                             Toast.makeText(mContext, "비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
@@ -175,5 +167,10 @@ public class FirebaseSystem  {
     }
 
 
+
+    public void addChatRoom(final ChatRoom chatRoom){
+
+        mChatRoomDatabaseReference.push().setValue(chatRoom);
+    }
 
 }

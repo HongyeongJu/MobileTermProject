@@ -1,6 +1,8 @@
 package com.hfad.alarmapplicaion.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     public String name;
     public String id;
     public String password;
