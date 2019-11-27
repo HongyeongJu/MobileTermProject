@@ -83,11 +83,18 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mFirebaseSystem.getAlarmRoomList();     // 알람룸 갱신
+    }
+
+    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getContext(), AlarmRoomActivity.class);
         startActivity(intent);
     }
 
+    // 알람방 리스트를 받기위한 브로드캐스트 리시버
     private BroadcastReceiver alarmListReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

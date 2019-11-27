@@ -80,11 +80,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         registerReceiver(getUserReceiver, filter);
 
 
-
         Intent getUserIntent = new Intent("getUser");
         sendBroadcast(getUserIntent);       // 현재 유저 정보를 업데이트 하라고 부탁함.
-
-
 
     }
 
@@ -96,8 +93,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
             int min = minute;
             String owner = myUserInfo.id;
             List<RoomPeople> people= new ArrayList<>();
-            people.add(new RoomPeople(owner, false));
-            people.add(new RoomPeople("테스트", false));
+            people.add(new RoomPeople(owner, false, myUserInfo.gender));       // 방장은 무조건 참여하게된다.
+            people.add(new RoomPeople("테스트", false, true));
 
             ChatRoom chatRoom = new ChatRoom(title, hour, min, owner, people, days[0], days[1], days[2], days[3], days[4], days[5], days[6]);
 
