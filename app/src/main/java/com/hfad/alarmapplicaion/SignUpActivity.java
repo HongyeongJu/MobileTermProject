@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.model.User;
 
@@ -19,6 +20,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText passwordEditText;
     ImageView btnRegister;
     FirebaseSystem mFirebaseSystem;
+    private FirebaseDatabase mFirebaseDatabase;      // 파이어베이스 객체
+    private DatabaseReference mUsersDatabaseReference;       // User테이블 객체
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +32,17 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         idEditText = findViewById(R.id.user_id);
         passwordEditText = findViewById(R.id.password);
         btnRegister =  (ImageView)findViewById(R.id.btnregister);
-        mFirebaseSystem = FirebaseSystem.getInstance();
+        mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();     // Firebase 객체 얻기
+        mUsersDatabaseReference = mFirebaseDatabase.getReference().child("users");
 
         btnRegister.setOnClickListener(this);
+
+
     }
-    User user1;
+
+    boolean isHim = false;
     @Override
     public void onClick(View v) {
         String id = idEditText.getText().toString();
@@ -42,7 +51,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         if(v.getId() == R.id.btnregister){  // 회원 가입 버튼을 눌렀을 때
             // 아이디가 서버에 등록이 되어있지 않으면
+            /*
             if(!mFirebaseSystem.isId(id)){
+                Log.d("Id", id);
                 User user = new User(name, id, password, 0, 0);
                 mFirebaseSystem.addUser(user);  // 유저를 등록한다.
                 Toast.makeText(getApplicationContext(), id + "등록완료", Toast.LENGTH_SHORT).show();
@@ -50,6 +61,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }else {
                 Toast.makeText(getApplicationContext(), "이미 아이디가 있습니다.", Toast.LENGTH_SHORT).show();
             }
+
+             */
+
+            User user = new User(name, id, password, 0, 0);
+            mFirebaseSystem.addUser(user);
+            finish();
+
         }
     }
+
 }
