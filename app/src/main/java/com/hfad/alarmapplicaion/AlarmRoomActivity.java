@@ -1,11 +1,14 @@
 package com.hfad.alarmapplicaion;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,7 +18,7 @@ import com.hfad.alarmapplicaion.model.RoomPeople;
 
 import java.util.ArrayList;
 
-public class AlarmRoomActivity extends AppCompatActivity {
+public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnItemClickListener {
 
     ArrayList<RoomPeople> members;
     ListView listView;
@@ -27,21 +30,7 @@ public class AlarmRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_room);
-
-       /*
-        listView = (ListView)findViewById(R.id.grouplistview);
-
-        members = new ArrayList<>();
-
-        members.add(new GroupMember(R.drawable.man, "홍영주", "일어나기싫어", false));
-        members.add(new GroupMember(R.drawable.woman, "이서영", "좋아", true));
-        members.add(new GroupMember(R.drawable.woman, "백송희", "가자", true));
-        members.add(new GroupMember(R.drawable.man, "오동현", "일어나볼까?", true));
-
-        GroupMemberListAdapter adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
-        listView.setAdapter(adapter);
-*/
-
+        
         listView = (ListView)findViewById(R.id.grouplistview);
         Intent intent = getIntent();
         ChatRoom chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
@@ -65,5 +54,22 @@ public class AlarmRoomActivity extends AppCompatActivity {
         GroupMemberListAdapter adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
 
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+    }
+
+    // 리스트 아이템을 눌렀을때 호출되는 함수
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        RoomPeople people = members.get(position);
+        String phoneNumber =people.phone;
+        if(phoneNumber != null){
+            // 누르면 해당 사용자에게 전화걸기
+            String tel = "tel:" + people.phone;
+            Intent intent = new Intent("android.intent.action.DIAL", Uri.parse(tel));
+            startActivity(intent);
+        }else {
+            Toast.makeText(getApplicationContext(), "폰 번호가 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
