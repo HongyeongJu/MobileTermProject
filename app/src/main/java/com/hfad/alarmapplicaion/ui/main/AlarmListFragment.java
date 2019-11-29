@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -169,7 +170,31 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
 
         }
 
-
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int position = menuInfo.position;       // 눌려진 위치
+        ChatRoom chat = chats.get(position);
+
+        // 누른 user가 방장이면
+        // 방장메뉴를 출력
+        if(item.getGroupId() == 0){
+            // 삭제 버튼
+            if(item.getItemId() == 0) {
+
+            }else if(item.getItemId() == 1){        // 수정 버튼
+
+            }
+        }else if(item.getGroupId() == 1){// 일반 회원메뉴
+            if(item.getItemId() == 0){      // 가입 버튼
+
+            }else if(item.getItemId()== 1){ // 탈퇴 버튼
+                mFirebaseSystem.deleteRoomMemeberFromAlarmRoom(chat, myUserInfo);
+            }
+        }
+
+        return super.onContextItemSelected(item);
+    }
 }

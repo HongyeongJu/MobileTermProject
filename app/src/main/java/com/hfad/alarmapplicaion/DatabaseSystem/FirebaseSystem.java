@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
+import com.hfad.alarmapplicaion.model.RoomPeople;
 import com.hfad.alarmapplicaion.model.User;
 
 import java.util.ArrayList;
@@ -199,8 +200,61 @@ public class FirebaseSystem  {
 
     // 알람룸을 추가하는 메소드
     public void addChatRoom(final ChatRoom chatRoom){
+        final String id = chatRoom.roomTitle;
 
-        mChatRoomDatabaseReference.push().setValue(chatRoom);
+        mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                isId =false;
+
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    String postId = postSnapShot.getKey();      // id 받아내기
+                    if(postId.equals(id)){      // 서버에 등록된 알람방 id가 현재 만들고자하는 id랑 같을경우 .예외발생
+                        isId = true;
+                        Toast.makeText(mContext, "같은 방제목을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if(!isId){      // 아이디가 없으면 알람방을 추가한다.
+                    mChatRoomDatabaseReference.child(id).setValue(chatRoom);
+                    Toast.makeText(mContext, "방이 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    // 알람룸 정보를 받고 그 알람룸 정보와 지금 현재 userInfo 정보로 알람룸 참가 리스트 삭제하는 메소드
+    public void deleteRoomMemeberFromAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
+
+        String chatRoomId = chatRoom.roomTitle;
+        mChatRoomDatabaseReference.child(chatRoomId).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String index = null;
+
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    RoomPeople people = postSnapShot.getValue(RoomPeople.class);
+                    if(myUserInfo.id.equals(people.id)){        // 같다면.
+                        index = postSnapShot.getKey();
+                    }
+                }
+                if(index != null){// 해당 위치에 있는 회원 삭제
+                    dataSnapshot.getRef().child(index).removeValue();   // 삭제
+                    Toast.makeText(mContext, "탈퇴하였습니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "회원이 없습니다. ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

@@ -3,6 +3,7 @@ package com.hfad.alarmapplicaion.model;
 import java.io.Serializable;
 import java.util.List;
 
+// 알람룸인데. 오타뜸.
 public class ChatRoom implements Serializable {
 
     public String roomTitle;       // 방제목
