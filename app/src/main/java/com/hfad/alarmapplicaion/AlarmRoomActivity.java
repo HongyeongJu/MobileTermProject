@@ -2,6 +2,8 @@ package com.hfad.alarmapplicaion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ public class AlarmRoomActivity extends AppCompatActivity {
     ListView listView;
     TextView mAlarmRoomTitle;
     TextView mAlarmRoomTime;
+    Button mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,14 @@ public class AlarmRoomActivity extends AppCompatActivity {
 
         mAlarmRoomTime = (TextView)findViewById(R.id.alarmRoomTitle);
         mAlarmRoomTitle =(TextView)findViewById(R.id.alarmTime);
+        mBackButton = (Button)findViewById(R.id.backbutton);
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         mAlarmRoomTitle.setText(chat.roomTitle);
         mAlarmRoomTime.setText(chat.hour + ":" + chat.minute);
@@ -53,5 +64,6 @@ public class AlarmRoomActivity extends AppCompatActivity {
 
         GroupMemberListAdapter adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
 
+        listView.setAdapter(adapter);
     }
 }

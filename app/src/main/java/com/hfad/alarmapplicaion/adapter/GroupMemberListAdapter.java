@@ -60,9 +60,9 @@ public class GroupMemberListAdapter extends ArrayAdapter<RoomPeople>
 
         //gender가 false면 남자
         if(data.gender){
-            photoImageView.setImageResource(R.drawable.man);
-        }else{// true면 여자
             photoImageView.setImageResource(R.drawable.woman);
+        }else{// true면 여자
+            photoImageView.setImageResource(R.drawable.man);
         }
         nameView.setText(data.id);  // 일단 이름이아니라 id를 사용
         //stateMessageView.setText(data.stateMessage);  상태메시지

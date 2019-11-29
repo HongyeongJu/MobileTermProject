@@ -19,6 +19,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     EditText nameEditText;
     EditText idEditText;
     EditText passwordEditText;
+    EditText phoneEditText;
     ImageView btnRegister;
     FirebaseSystem mFirebaseSystem;
     private FirebaseDatabase mFirebaseDatabase;      // 파이어베이스 객체
@@ -38,7 +39,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         btnRegister =  (ImageView)findViewById(R.id.btnregister);
         maleButton = (RadioButton)findViewById(R.id.malebtn);
         femaleButton = (RadioButton)findViewById(R.id.femalebtn);
-
+        phoneEditText = (EditText)findViewById(R.id.phoneNumber);
 
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
@@ -54,9 +55,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        // 텍스트 입력을 데이터로 받는다.
         String id = idEditText.getText().toString();
         String name = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        String phone = phoneEditText.getText().toString();
 
         if(v.getId() == R.id.btnregister){  // 회원 가입 버튼을 눌렀을 때
             // 아이디가 서버에 등록이 되어있지 않으면
@@ -72,8 +75,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
 
              */
-
-            User user = new User(name, id, password, 0, 0, gender);
+            // 입력을 객체로 만든다.
+            User user = new User(name, id, password, 0, 0, gender, phone);
             mFirebaseSystem.addUser(user);
             finish();
 
