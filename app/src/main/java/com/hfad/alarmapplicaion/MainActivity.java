@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     FirebaseDatabase firebaseDatabase =FirebaseDatabase.getInstance();
 
-    User myUserInfo;
+    public User myUserInfo;
 
     ViewPager viewPager;
     @Override

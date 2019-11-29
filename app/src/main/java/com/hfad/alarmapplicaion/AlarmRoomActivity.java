@@ -30,7 +30,7 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_room);
-        
+
         listView = (ListView)findViewById(R.id.grouplistview);
         Intent intent = getIntent();
         ChatRoom chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
@@ -72,4 +72,7 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
         }
 
     }
+
+
+
 }

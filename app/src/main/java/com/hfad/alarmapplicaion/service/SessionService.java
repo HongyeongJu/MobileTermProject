@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -27,7 +28,7 @@ public class SessionService extends Service {
         super.onCreate();
 
         IntentFilter filter = new IntentFilter();
-        filter.addAction(receiveUser);
+        filter.addAction("getUser");
         registerReceiver(receiver, filter);
 
         Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
@@ -65,9 +66,8 @@ public class SessionService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
-            if(action == receiveUser){
-
+            if(action.equals("getUser")){
+                Log.d("세션", "세션이 불려짐");
                 Intent intent1 = new Intent("putUser");
                 intent1.putExtra("user", myUserInfo);
                 sendBroadcast(intent1);

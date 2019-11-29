@@ -145,6 +145,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
+           // Toast.makeText(getApplicationContext(), "리시버 정상작동", Toast.LENGTH_SHORT).show();
             if(action == "putUser"){
                 myUserInfo = (User)intent.getSerializableExtra("user");
             }

@@ -80,7 +80,7 @@ public class FirebaseSystem  {
         return isuserId;
     }
 
-
+// 로그인 하는 메소드
     public boolean login(String id, final String password){
         mUsersDatabaseReference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -136,6 +136,7 @@ public class FirebaseSystem  {
         return tempUser;
     }
     private boolean isId;
+    // 회원을 추가하는 메소드
     public boolean addUser(final User user)  {
         final String id = user.id;
 
@@ -169,6 +170,7 @@ public class FirebaseSystem  {
     }
 
 
+    // 알람룸 리스트를 갱신하는 메소드
     public void getAlarmRoomList(){
 
         mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -195,6 +197,7 @@ public class FirebaseSystem  {
 
     }
 
+    // 알람룸을 추가하는 메소드
     public void addChatRoom(final ChatRoom chatRoom){
 
         mChatRoomDatabaseReference.push().setValue(chatRoom);
