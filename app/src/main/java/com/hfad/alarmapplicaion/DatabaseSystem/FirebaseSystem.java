@@ -257,4 +257,40 @@ public class FirebaseSystem  {
         });
     }
 
+    // 알람룸 정보와 유저 정보를 받고 알람룸에 멤버를 추가하는 메소드
+    public void addRoomMemberFromAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
+        String chatRoomId = chatRoom.roomTitle;
+
+        mChatRoomDatabaseReference.child(chatRoomId).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isHere = false;
+                String lastNumStr = null;
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    RoomPeople people = postSnapShot.getValue(RoomPeople.class);
+                    if(myUserInfo.id.equals(people.id)){        // 같다면? (이 방에 이미 참여하고 있다는 뜻)
+                        isHere = true;
+                    }
+                    lastNumStr = postSnapShot.getKey();
+                }
+                int lastNum = Integer.valueOf(lastNumStr);
+
+                if(isHere){
+                    Toast.makeText(mContext, "이미 이 방에 참여하고 있습니다.", Toast.LENGTH_SHORT).show();
+                }else if(lastNum > 8){
+                    Toast.makeText(mContext, "방인원수는 8명이 제한입니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    lastNum++;
+                    RoomPeople people = new RoomPeople(myUserInfo.id, false, myUserInfo.gender, myUserInfo.phoneNumber);
+                    dataSnapshot.getRef().child(String.valueOf(lastNum)).setValue(people);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

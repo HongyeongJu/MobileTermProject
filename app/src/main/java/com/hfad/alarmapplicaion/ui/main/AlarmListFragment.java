@@ -189,7 +189,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
             }
         }else if(item.getGroupId() == 1){// 일반 회원메뉴
             if(item.getItemId() == 0){      // 가입 버튼
-
+                mFirebaseSystem.addRoomMemberFromAlarmRoom(chat, myUserInfo);
             }else if(item.getItemId()== 1){ // 탈퇴 버튼
                 mFirebaseSystem.deleteRoomMemeberFromAlarmRoom(chat, myUserInfo);
             }
