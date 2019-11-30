@@ -1,6 +1,9 @@
 package com.hfad.alarmapplicaion.ui.main;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -17,10 +20,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.R;
+import com.hfad.alarmapplicaion.model.Shop;
+
+import java.util.ArrayList;
 
 public class ShopListFragment extends Fragment {
 
+
+    ArrayList<Shop> shops;
+
+    FirebaseSystem mFirebaseSystem;
 
     private Integer[] mThumbIds = { R.drawable.chicken,
             R.drawable.pizza, R.drawable.munsang,
@@ -38,6 +49,7 @@ public class ShopListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mFirebaseSystem = FirebaseSystem.getInstance(getContext());
         GridView gridview = view.findViewById(R.id.shop_gridview);
         gridview.setAdapter(new ImageAdapter(getContext()));
         gridview.setOnItemClickListener(gridviewOnItemClickListener);
@@ -46,6 +58,12 @@ public class ShopListFragment extends Fragment {
 
         windowManager = ((WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE));     // 윈도우 매니저를 받는다.
         windowManager.getDefaultDisplay().getMetrics(mMetrics);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("shopList");
+        getContext().registerReceiver(broadcastReceiver, filter);
+
+        mFirebaseSystem.getShopListItem();
     }
 
     @Override
@@ -99,4 +117,17 @@ public class ShopListFragment extends Fragment {
             return imageView;
         }
     }
+
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(action == "shopList") {
+                shops = (ArrayList<Shop>)intent.getSerializableExtra("shopList");
+                //Toast.makeText(getContext(), shops.get(0).itemName, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }

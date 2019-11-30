@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.RoomPeople;
+import com.hfad.alarmapplicaion.model.Shop;
 import com.hfad.alarmapplicaion.model.User;
 
 import java.util.ArrayList;
@@ -373,7 +374,27 @@ public class FirebaseSystem  {
 
             }
         });
+    }
+    // 현재 Shop의 아이템의 리스트를 받아오는 메소드
+    public void getShopListItem(){
+        mShopDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Shop> shops = new ArrayList<>();
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    Shop shop = postSnapshot.getValue(Shop.class);
+                    shops.add(shop);
+                }
+                // 브로드캐스트를 사용해서 shop정보를 전달한다.
+                Intent intent = new Intent("shopList");
+                intent.putExtra("shopList", shops);
+                mContext.sendBroadcast(intent);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
     }
 }
