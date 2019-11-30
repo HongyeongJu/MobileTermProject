@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
@@ -19,6 +20,7 @@ import com.hfad.alarmapplicaion.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // Firebase에 대한 접근과 이에 대한 함수 제공.
 public class FirebaseSystem  {
@@ -332,5 +334,46 @@ public class FirebaseSystem  {
         updateMap.put("saturday", days[5]);
         updateMap.put("sunday", days[6]);
         mChatRoomDatabaseReference.child(chatRoomId).updateChildren(updateMap);
+    }
+
+    // 현재 내가 참여하고 있는 알람룸 리스트를 브로드 캐스트로 전송한다.
+    public void getMyAlarmRoomList(final User myUserInfo){
+        final ArrayList<ChatRoom> myChats = new ArrayList<ChatRoom>();
+        mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+
+                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>(){};      // Gerneric한 데이터를 사용해서 firebase로부터 데이터를 받으려면 사용해야됨.
+                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
+                    for(RoomPeople people : peoples ){  //전부 검사
+                        if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
+                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
+                            myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
+                        }
+                    }
+                }
+/*
+데이터가 있는지 확인 완료
+                for(ChatRoom chat : myChats){
+                    Toast.makeText(mContext, chat.roomTitle, Toast.LENGTH_SHORT).show();
+                }
+
+
+ */
+                // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
+                Intent intent = new Intent("myAlarmList");
+                intent.putExtra("myAlarmList", myChats);
+                mContext.sendBroadcast(intent);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 }

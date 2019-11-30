@@ -12,7 +12,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
+import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
+
+import java.util.ArrayList;
 
 
 // 로그인 되면 로그인 세션을 유지하는 서비스이다.
@@ -29,6 +32,7 @@ public class SessionService extends Service {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("getUser");
+        filter.addAction("myAlarmList");
         registerReceiver(receiver, filter);
 
         Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
@@ -45,6 +49,8 @@ public class SessionService extends Service {
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
         //Log.d("service", "service");
 
+
+        mFirebaseSystem.getMyAlarmRoomList(myUserInfo);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -71,6 +77,13 @@ public class SessionService extends Service {
                 Intent intent1 = new Intent("putUser");
                 intent1.putExtra("user", myUserInfo);
                 sendBroadcast(intent1);
+            }else if(action.equals("myAlarmList")){     // 여기서 내가 참여한 리스트를 받는다. 그 리스트들을 나의 데이터베이스에 저장한다.
+                Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
+                ArrayList<ChatRoom> chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("myAlarmList");
+                for(ChatRoom chat : chats){
+                    Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
     };
