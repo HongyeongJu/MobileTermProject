@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,7 +64,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "ㅇㅇ", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "ㅇㅇ", Toast.LENGTH_SHORT).show();
 
 
                 Intent intent = new Intent(getContext(), AlarmSettingActivity.class);
@@ -127,7 +126,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action.equals("getAlarmList")){
-                Toast.makeText(getContext(),"브로드캐스트 리시버 실행", Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(getContext(),"브로드캐스트 리시버 실행", Toast.LENGTH_SHORT).show();
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("alarmList");      // ArrayList 데이터를 받는다.
                 adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);        // 새롭게 ArrayList 어뎁터를 만들어서
                 listView.setAdapter(adapter);// 새롭게 listView에 어댑터를 적용한다.
