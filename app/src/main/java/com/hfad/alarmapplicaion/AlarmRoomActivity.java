@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.adapter.GroupMemberListAdapter;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.RoomPeople;
@@ -26,11 +27,14 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     TextView mAlarmRoomTime;
     Button mBackButton;
 
+    FirebaseSystem mFirebaseSystem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_room);
 
+        mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         listView = (ListView)findViewById(R.id.grouplistview);
         Intent intent = getIntent();
         ChatRoom chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
@@ -55,6 +59,9 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
+
+        mFirebaseSystem.addTurnOffListener(chat);
+
     }
 
     // 리스트 아이템을 눌렀을때 호출되는 함수
