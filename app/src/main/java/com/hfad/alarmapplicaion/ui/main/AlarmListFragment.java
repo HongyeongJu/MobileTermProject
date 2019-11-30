@@ -1,5 +1,6 @@
 package com.hfad.alarmapplicaion.ui.main;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.hfad.alarmapplicaion.AlarmRoomActivity;
 import com.hfad.alarmapplicaion.AlarmSettingActivity;
+import com.hfad.alarmapplicaion.AlarmUpdateActivity;
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.R;
@@ -125,6 +127,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action.equals("getAlarmList")){
+                Toast.makeText(getContext(),"브로드캐스트 리시버 실행", Toast.LENGTH_SHORT).show();
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("alarmList");      // ArrayList 데이터를 받는다.
                 adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);        // 새롭게 ArrayList 어뎁터를 만들어서
                 listView.setAdapter(adapter);// 새롭게 listView에 어댑터를 적용한다.
@@ -184,8 +187,11 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
             // 삭제 버튼
             if(item.getItemId() == 0) {
                 mFirebaseSystem.deleteAlarmRoom(chat, myUserInfo);
+                updateListView();
             }else if(item.getItemId() == 1){        // 수정 버튼
-
+                Intent intent = new Intent(getContext(), AlarmUpdateActivity.class);
+                intent.putExtra("chat", chat);
+                startActivityForResult(intent, 100);
             }
         }else if(item.getGroupId() == 1){// 일반 회원메뉴
             if(item.getItemId() == 0){      // 가입 버튼
@@ -196,5 +202,19 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    // 수정 액티비티에서 수정이 다 끝나면 리스트뷰 갱신작업을 해준다.
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 100 && resultCode == Activity.RESULT_OK){
+            updateListView();
+        }
+    }
+
+    public void updateListView(){
+        mFirebaseSystem.getAlarmRoomList();
     }
 }

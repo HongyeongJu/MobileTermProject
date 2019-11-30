@@ -18,6 +18,7 @@ import com.hfad.alarmapplicaion.model.RoomPeople;
 import com.hfad.alarmapplicaion.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 // Firebase에 대한 접근과 이에 대한 함수 제공.
 public class FirebaseSystem  {
@@ -315,5 +316,21 @@ public class FirebaseSystem  {
 
             }
         });
+    }
+
+    public void updateAlarmRoom(final ChatRoom chatRoom, final int hour, final int min, final boolean[] days){
+        String chatRoomId = chatRoom.roomTitle;
+
+        HashMap<String, Object> updateMap = new HashMap<>();
+        updateMap.put("hour", hour);
+        updateMap.put("minute", min);
+        updateMap.put("monday", days[0]);
+        updateMap.put("tuesday", days[1]);
+        updateMap.put("wednesday", days[2]);
+        updateMap.put("thursday", days[3]);
+        updateMap.put("friday", days[4]);
+        updateMap.put("saturday", days[5]);
+        updateMap.put("sunday", days[6]);
+        mChatRoomDatabaseReference.child(chatRoomId).updateChildren(updateMap);
     }
 }
