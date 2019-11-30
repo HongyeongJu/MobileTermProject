@@ -1,6 +1,9 @@
 package com.hfad.alarmapplicaion;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +31,9 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     Button mBackButton;
 
     FirebaseSystem mFirebaseSystem;
+    GroupMemberListAdapter adapter;
 
+    ChatRoom chat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +42,7 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         listView = (ListView)findViewById(R.id.grouplistview);
         Intent intent = getIntent();
-        ChatRoom chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
+        chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
 
         mAlarmRoomTime = (TextView)findViewById(R.id.alarmRoomTitle);
         mAlarmRoomTitle =(TextView)findViewById(R.id.alarmTime);
@@ -55,13 +60,17 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
 
         members = (ArrayList<RoomPeople>)chat.peoples;
 
-        GroupMemberListAdapter adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
+        adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
 
         mFirebaseSystem.addTurnOffListener(chat);
 
+
+        IntentFilter filter  = new IntentFilter();
+        filter.addAction("updateMemeberState");
+        registerReceiver(broadcastReceiver, filter);
     }
 
     // 리스트 아이템을 눌렀을때 호출되는 함수
@@ -81,5 +90,22 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFirebaseSystem.deleteTurnOffListener(chat);
+    }
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action == "updateMemeberState"){
+                members = (ArrayList<RoomPeople>)intent.getSerializableExtra("updateMemeberState");
+                // 다시 상태 리스트를 갱신
+                adapter = new GroupMemberListAdapter(getApplicationContext(), R.layout.member_item_list, members);
+                listView.setAdapter(adapter);
+            }
+        }
+    };
 }

@@ -400,34 +400,48 @@ public class FirebaseSystem  {
         });
     }
 
+    //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
+    ChildEventListener addTurnOffListener1 = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
+            // 주소값은 https://alarmapplicaion.firebaseio.com/chatroom/hjhgg/peoples 이다. 즉 people 값의 어레이리스트로 받으면 된다.
+            GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
+            ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
+            Intent intent = new Intent("updateMemeberState");
+            intent.putExtra("updateMemeberState", peoples);
+            mContext.sendBroadcast(intent);
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     public void addTurnOffListener(final ChatRoom chatRoom){
 
         String roomId = chatRoom.roomTitle;
-        mChatRoomDatabaseReference.child(roomId).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        Log.d("roomId", roomId);
+        mChatRoomDatabaseReference.child(roomId).addChildEventListener(addTurnOffListener1);
+    }
+    public void deleteTurnOffListener(final ChatRoom chatRoom){
+        String chatRoomId = chatRoom.roomTitle;
+        mChatRoomDatabaseReference.child(chatRoomId).removeEventListener(addTurnOffListener1);
     }
 }
