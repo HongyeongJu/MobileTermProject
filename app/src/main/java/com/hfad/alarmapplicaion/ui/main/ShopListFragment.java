@@ -5,21 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.R;
 import com.hfad.alarmapplicaion.model.Shop;
@@ -28,17 +28,14 @@ import java.util.ArrayList;
 
 public class ShopListFragment extends Fragment {
 
-
     ArrayList<Shop> shops;
-
     FirebaseSystem mFirebaseSystem;
+    GridView gridview;
 
-    private Integer[] mThumbIds = { R.drawable.chicken,
-            R.drawable.pizza, R.drawable.munsang,
-    };
-    DisplayMetrics mMetrics;
+    String[] shopItemNameList = null;
+    String[] shopItemPriceList = null;
+    String[] shopItemImageUrlList = null;
 
-    WindowManager windowManager;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -50,83 +47,95 @@ public class ShopListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
-        GridView gridview = view.findViewById(R.id.shop_gridview);
-        gridview.setAdapter(new ImageAdapter(getContext()));
-        gridview.setOnItemClickListener(gridviewOnItemClickListener);
-
-        mMetrics = new DisplayMetrics();
-
-        windowManager = ((WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE));     // 윈도우 매니저를 받는다.
-        windowManager.getDefaultDisplay().getMetrics(mMetrics);
+        mFirebaseSystem.getShopListItem();
+        gridview = view.findViewById(R.id.shop_gridview);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("shopList");
         getContext().registerReceiver(broadcastReceiver, filter);
 
-        mFirebaseSystem.getShopListItem();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
-    private GridView.OnItemClickListener gridviewOnItemClickListener
-            = new GridView.OnItemClickListener() {
+    public class ShopAdapter extends BaseAdapter {
+        //private Context mContext;
 
-        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            Toast.makeText(getContext(), arg0.getAdapter().getItem(arg2).toString(), Toast.LENGTH_SHORT).show();
-        }
-    };
+        private LayoutInflater inflater = null;
 
-    public class ImageAdapter extends BaseAdapter {
-        private Context mContext;
+        String[] shopItemImageUrls;
+        String[] shopItemPrices;
+        String[] shopItemNames;
+        Context context;
 
-        public ImageAdapter(Context c) {
-            mContext = c;
+        ArrayList<Shop> shops;
+
+        public ShopAdapter(Context context, ArrayList<Shop> arrayList) {
+
+            this.context = context;
+            this.shops = arrayList;
+            inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         public int getCount() {
-            return mThumbIds.length;
+            return shops.size();
         }
 
         public Object getItem(int position) {
-            return mThumbIds[position];
+            return position;
         }
 
         public long getItemId(int position) {
             return position;
         }
 
-        // create a new ImageView for each item referenced by the Adapter
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public class Holder{
+            TextView shopItemName;
+            TextView shopItemPrice;
+            ImageView shopItemImage;
+        }
 
-            int rowWidth = (mMetrics.widthPixels) / 3;
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
-            ImageView imageView;
-            if (convertView == null) {
-                imageView = new ImageView(mContext);
-                imageView.setLayoutParams(new GridView.LayoutParams(rowWidth,rowWidth));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                imageView.setPadding(1, 1, 1, 1);
-            } else {
-                imageView = (ImageView) convertView;
-            }
-            imageView.setImageResource(mThumbIds[position]);
-            return imageView;
+            Holder holder=new Holder();
+            View rowView;
+
+            rowView = inflater.inflate(R.layout.shopgridview, null);
+            holder.shopItemName =(TextView) rowView.findViewById(R.id.shopItemName);
+            holder.shopItemPrice = rowView.findViewById(R.id.shopItemPrice);
+            holder.shopItemImage =(ImageView) rowView.findViewById(R.id.shopItemImage);
+
+            holder.shopItemName.setText(shops.get(position).itemName);
+            holder.shopItemPrice.setText(shops.get(position).price);
+
+
+            Glide.with(context).load(shops.get(position).url).into(holder.shopItemImage);
+            // holder.shopItemImage.setImageResource(shopItemImageUrls[position]);
+            holder.shopItemImage.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+            holder.shopItemImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.shopItemImage.setPadding(8, 8, 8, 8);
+
+            rowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "You Clicked "+ shopItemNames[position], Toast.LENGTH_SHORT).show();
+                }
+            });
+            return rowView;
         }
     }
-
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
             if(action == "shopList") {
                 shops = (ArrayList<Shop>)intent.getSerializableExtra("shopList");
                 //Toast.makeText(getContext(), shops.get(0).itemName, Toast.LENGTH_SHORT).show();
+                gridview.setAdapter(new ShopAdapter(getContext(), shops));
             }
         }
     };
