@@ -293,4 +293,27 @@ public class FirebaseSystem  {
         });
     }
 
+
+    // 알람방 삭제하는 메소드
+    public void deleteAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
+        String chatRoomId = chatRoom.roomTitle;
+
+        mChatRoomDatabaseReference.child(chatRoomId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ChatRoom chat = dataSnapshot.getValue(ChatRoom.class);
+                if(chat.owner.equals(myUserInfo.id)){       // 자신이 방장이면
+                    dataSnapshot.getRef().removeValue();
+                    Toast.makeText(mContext, "방을 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "방장만 방을 없엘 수가 있습니다. ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

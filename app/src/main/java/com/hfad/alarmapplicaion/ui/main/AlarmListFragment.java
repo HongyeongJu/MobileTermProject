@@ -183,7 +183,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         if(item.getGroupId() == 0){
             // 삭제 버튼
             if(item.getItemId() == 0) {
-
+                mFirebaseSystem.deleteAlarmRoom(chat, myUserInfo);
             }else if(item.getItemId() == 1){        // 수정 버튼
 
             }
