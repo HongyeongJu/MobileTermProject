@@ -103,7 +103,7 @@ public class FirebaseSystem  {
                             Toast.makeText(mContext, "로그인 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext, MainActivity.class);
                             intent.putExtra("user", user);
-                            mContext.startActivity(intent);
+                            mContext.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
 
                         }else {
