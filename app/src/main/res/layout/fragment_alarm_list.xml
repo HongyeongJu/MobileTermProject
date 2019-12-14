@@ -4,12 +4,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.AlarmListFragment">
+    tools:context=".ui.main.AlarmListFragment"
+    >
 
     <ListView
         android:id="@+id/alarmList"
         android:layout_width="match_parent"
-        android:layout_height="600dp" />
+        android:layout_height="500dp"
+        />
 
 
     <Button
