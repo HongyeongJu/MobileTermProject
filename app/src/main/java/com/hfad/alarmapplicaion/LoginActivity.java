@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,9 @@ public class LoginActivity extends AppCompatActivity {
     ImageView signupButton;
     EditText idEditText;        // id 에디트 텍스트
     EditText pwEditText;        // password 에디트 텍스트
+
+    String id;
+    String pw;
 
     FirebaseSystem firebaseSystem;
 
@@ -38,9 +42,21 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                id = idEditText.getText().toString();
+                pw = pwEditText.getText().toString();
 
-                firebaseSystem.login(idEditText.getText().toString(), pwEditText.getText().toString());
-
+                if(id.equals("")){
+                    Toast.makeText(getApplicationContext(), "아이디를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else if(pw.equals("")){
+                    Toast.makeText(getApplicationContext(), "비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else if(id.equals("") && pw.equals("")){
+                    Toast.makeText(getApplicationContext(), "아이디, 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    firebaseSystem.login(id, pw);
+                }
             }
         });
 

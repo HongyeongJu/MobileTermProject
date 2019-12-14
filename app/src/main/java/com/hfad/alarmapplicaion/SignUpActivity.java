@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +28,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     RadioButton maleButton;
     RadioButton femaleButton;
     boolean gender;
+    boolean checkG = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +78,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
              */
             // 입력을 객체로 만든다.
-            User user = new User(name, id, password, 0, 0, gender, phone);
-            mFirebaseSystem.addUser(user);
-            finish();
+            if(id.equals("") || name.equals("") || password.equals("") || phone.equals("") || checkG == false){
+                Toast.makeText(getApplicationContext(), "필수항목을 확인하세요.", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                User user = new User(name, id, password, 0, 0, gender, phone);
+                mFirebaseSystem.addUser(user);
+                finish();
+            }
 
         }else if(v.getId() == R.id.malebtn){        // 남성은 false
             gender = false;
+            checkG = true;
         }else if(v.getId() == R.id.femalebtn)       // 여성은 true
         {
             gender = true;
+            checkG = true;
         }
     }
 
