@@ -80,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             // 입력을 객체로 만든다.
             if(id.equals("") || name.equals("") || password.equals("") || phone.equals("") || checkG == false){
                 Toast.makeText(getApplicationContext(), "필수항목을 확인하세요.", Toast.LENGTH_SHORT).show();
+
             }
             else{
                 User user = new User(name, id, password, 0, 0, gender, phone);
