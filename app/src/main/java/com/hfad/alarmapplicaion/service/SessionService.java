@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.hfad.alarmapplicaion.AlarmReceiver;
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
+import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
 
@@ -43,6 +44,7 @@ public class SessionService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction("getUser");
         filter.addAction("myAlarmList");
+        filter.addAction("startMainActivity");
         registerReceiver(receiver, filter);
 
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
@@ -55,7 +57,10 @@ public class SessionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         // 메인 액티비티로 부터 유저 데이터 값을 받아와서 저장을 한다.
-        myUserInfo = (User)intent.getSerializableExtra("user");
+        if(myUserInfo == null){
+            myUserInfo = (User)intent.getSerializableExtra("user");
+        }
+
 
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
         //Log.d("service", "service");
@@ -68,6 +73,8 @@ public class SessionService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(receiver);
+        Toast.makeText(getApplicationContext(), "현재 유저" + myUserInfo.id +"님이 종료했습니다. " , Toast.LENGTH_SHORT).show();        // 로그아웃
     }
 
     @Nullable
@@ -84,7 +91,7 @@ public class SessionService extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if(action.equals("getUser")){
-                Log.d("세션", "세션이 불려짐");
+                //Log.d("세션", "세션이 불려짐");
                 Intent intent1 = new Intent("putUser");
                 intent1.putExtra("user", myUserInfo);
                 sendBroadcast(intent1);
@@ -96,6 +103,13 @@ public class SessionService extends Service {
                 }
 
                 setAlarm();
+            }else if(action.equals("startMainActivity")){
+                // MainActivity 출력하도록함.
+                Toast.makeText(getApplicationContext(),"서비스를 통해 실행", Toast.LENGTH_SHORT).show();
+                Intent startIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startIntent.putExtra("user", myUserInfo);
+                startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(startIntent);
             }
         }
     };

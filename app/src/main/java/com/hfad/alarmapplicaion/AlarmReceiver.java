@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 public class AlarmReceiver extends BroadcastReceiver {
    Context context1;
@@ -22,6 +21,5 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else {
             context1.startService(sIntent);
         }
-        Log.d("ODH","Reciver");
     }
 }
