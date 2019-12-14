@@ -40,11 +40,8 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
 
     ListView listView;      // 화면에 보여질 리스트뷰
     Button addButton;       // 추가 버튼
-
     FirebaseSystem mFirebaseSystem;     // 파이어 베이스 시스템 객체
-
     ArrayList<ChatRoom> chats = new ArrayList<>();          // 브로드 캐스트 리시버로 파이어베이스 시스템에서 intent로 받을 arrayList
-
     AlarmRoomListAdapter adapter;       // 리스트뷰에 적용할 어뎁터
     User myUserInfo;            // 현재 유저 정보
 
@@ -58,32 +55,29 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addButton = view.findViewById(R.id.addAlarmButton);
+        listView = view.findViewById(R.id.alarmList);
 
-        myUserInfo = ((MainActivity)getActivity()).myUserInfo;
+        myUserInfo = ((MainActivity)getActivity()).myUserInfo;      // 현재 유저 정보 받기
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(getContext(), "ㅇㅇ", Toast.LENGTH_SHORT).show();
-
-
                 Intent intent = new Intent(getContext(), AlarmSettingActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 200);
             }
         });
-        listView = view.findViewById(R.id.alarmList);
         adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);
 
 
         // 브로드 캐스트 리시버를 등록해서 파이어베이스 시스템으로부터 알림방의 리스트를 받아온다.
         IntentFilter filter = new IntentFilter();
         filter.addAction("getAlarmList");
-        //filter.addAction("putUser");
+        filter.addAction("putUser");
         getContext().registerReceiver(alarmListReceiver, filter);
 
         //파이어베이스
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
-        //mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
+        mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
 
         listView.setAdapter(adapter);       // 어뎁터 설정한다.
         listView.setOnItemClickListener(this);
@@ -99,7 +93,8 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     @Override
     public void onResume() {
         super.onResume();
-        mFirebaseSystem.getAlarmRoomList();     // 알람룸 갱신
+
+
     }
 
     // 리스트의 개별 아이템을 선택했을 때 호출되는 메소드
@@ -128,6 +123,8 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("alarmList");      // ArrayList 데이터를 받는다.
                 adapter = new AlarmRoomListAdapter(getContext(), R.layout.alarmlistitem, chats);        // 새롭게 ArrayList 어뎁터를 만들어서
                 listView.setAdapter(adapter);// 새롭게 listView에 어댑터를 적용한다.
+
+                //Log.d("getAlarmList", "불려짐");
             }else if(action.equals("putUser")){
                 myUserInfo = (User)intent.getSerializableExtra("user");
             }
@@ -208,6 +205,9 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
 
         if(requestCode == 100 && resultCode == Activity.RESULT_OK){
             updateListView();
+        }else if(requestCode == 200 && resultCode == Activity.RESULT_OK){
+            updateListView();
+            //Log.d("updateListView", "updateListView");
         }
     }
 

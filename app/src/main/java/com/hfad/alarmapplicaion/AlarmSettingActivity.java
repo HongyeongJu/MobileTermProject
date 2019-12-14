@@ -103,6 +103,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
                 mFirebaseSystem.addChatRoom(chatRoom);
 
+                setResult(RESULT_OK);
                 finish();
             }else {
                 Toast.makeText(getApplicationContext(), "방제목을 입력해주세요." , Toast.LENGTH_SHORT).show();

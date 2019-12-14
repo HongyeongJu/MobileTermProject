@@ -182,6 +182,7 @@ public class FirebaseSystem  {
     // 알람룸 리스트를 갱신하는 메소드
     public void getAlarmRoomList(){
 
+        /*
         mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -203,7 +204,30 @@ public class FirebaseSystem  {
 
             }
         });
+*/
+        mChatRoomDatabaseReference.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                ArrayList<ChatRoom> chats = new ArrayList<>();
+                for(MutableData postSnapShot : mutableData.getChildren()){
+                    ChatRoom chatRoom = (ChatRoom)postSnapShot.getValue(ChatRoom.class);
 
+                    // Log.d("chatRoom", chatRoom.roomTitle);
+                    chats.add(chatRoom);            // 채팅 방 추가
+                }
+                Intent intent = new Intent("getAlarmList");
+                intent.putExtra("alarmList", chats);
+                mContext.sendBroadcast(intent);                 // 브로드 캐스트를 보내서 AlarmListFragment에서 리스트뷰 갱신을 하라고 명령한다.
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
     // 알람룸을 추가하는 메소드
@@ -244,6 +268,8 @@ public class FirebaseSystem  {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 Toast.makeText(mContext,"방이 등록되었습니다. " ,Toast.LENGTH_SHORT).show();
+
+
             }
         });
     }

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -43,7 +42,7 @@ public class SessionService extends Service {
         filter.addAction("myAlarmList");
         registerReceiver(receiver, filter);
 
-        Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
 
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
     }
@@ -86,10 +85,10 @@ public class SessionService extends Service {
                 intent1.putExtra("user", myUserInfo);
                 sendBroadcast(intent1);
             }else if(action.equals("myAlarmList")){     // 여기서 내가 참여한 리스트를 받는다. 그 리스트들을 나의 데이터베이스에 저장한다.
-                Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("myAlarmList");
                 for(ChatRoom chat : chats){
-                    Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
                 }
 
                 setAlarm();
