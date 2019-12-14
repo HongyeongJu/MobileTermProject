@@ -1,157 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context=".MainActivity">
-
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/abovebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bar" />
+        app:srcCompat="@drawable/bar"
+        android:layout_weight="3"/>
 
 
     <ImageView
         android:id="@+id/clockimg"
         android:layout_width="204dp"
         android:layout_height="195dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/abovebar"
-        app:layout_constraintVertical_bias="0.476"
-        app:srcCompat="@drawable/alarmclock" />
+        app:srcCompat="@drawable/alarmclock"
+        android:layout_weight="1"
+        android:layout_gravity="center"/>
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="317dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="12dp"
-        android:hint="성명을 입력하세요"
-        android:padding="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#8C8C8C"
-        app:layout_constraintBottom_toTopOf="@+id/user_id"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="317dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="320dp"
-        android:hint="비밀번호를 입력하세요"
-        android:inputType="textPassword"
-        android:padding="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#8C8C8C"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/phoneNumber"
-        android:layout_width="317dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="9dp"
-        android:hint="핸드폰 번호를 입력하세요."
-        android:inputType="phone"
-        android:padding="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#8C8C8C"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
-
-    <EditText
-        android:id="@+id/user_id"
-        android:layout_width="317dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="12dp"
-        android:hint="ID를 입력하세요"
-        android:padding="10dp"
-        android:textColor="#000000"
-        android:textColorHint="#8C8C8C"
-        app:layout_constraintBottom_toTopOf="@+id/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/underbar"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/bar" />
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_gravity="center" >
+
+        <EditText
+            android:id="@+id/user_id"
+            android:layout_width="317dp"
+            android:layout_height="51dp"
+            android:hint="ID를 입력하세요"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#8C8C8C" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="317dp"
+            android:layout_height="51dp"
+            android:hint="성명을 입력하세요"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#8C8C8C"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="317dp"
+            android:layout_height="51dp"
+            android:hint="비밀번호를 입력하세요"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#8C8C8C" />
+
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:layout_width="317dp"
+            android:layout_height="51dp"
+            android:hint="핸드폰 번호를 입력하세요."
+            android:inputType="phone"
+            android:padding="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#8C8C8C" />
+
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center" >
+
+            <RadioButton
+                android:id="@+id/malebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="남" />
+
+            <RadioButton
+                android:id="@+id/femalebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="여" />
+        </RadioGroup>
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/btnregister"
-        android:layout_width="172dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnLoginScreen"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintVertical_bias="0.714"
-        app:srcCompat="@drawable/register_kor" />
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/register_kor"
+        android:layout_gravity="center"/>
 
     <ImageView
         android:id="@+id/btnLoginScreen"
         android:layout_width="296dp"
         android:layout_height="32dp"
-        app:layout_constraintBottom_toBottomOf="@+id/underbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintVertical_bias="0.81"
-        app:srcCompat="@drawable/registerlogin" />
+        app:srcCompat="@drawable/registerlogin2"
+        android:layout_gravity="center" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
+
+    <ImageView
+        android:id="@+id/underbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/btnregister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintVertical_bias="0.816">
+        app:srcCompat="@drawable/bar"
+        android:layout_weight="3"/>
 
-        <RadioButton
-            android:id="@+id/malebtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:text="남" />
-
-        <RadioButton
-            android:id="@+id/femalebtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="여" />
-    </RadioGroup>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -121,7 +121,7 @@ public class ShopListFragment extends Fragment {
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "You Clicked "+ shopItemNames[position], Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, " Clicked ", Toast.LENGTH_SHORT).show();
                 }
             });
             return rowView;

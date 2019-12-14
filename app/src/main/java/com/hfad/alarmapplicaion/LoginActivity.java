@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,9 @@ public class LoginActivity extends AppCompatActivity {
     EditText idEditText;        // id 에디트 텍스트
     EditText pwEditText;        // password 에디트 텍스트
 
+    String id;
+    String pw;
+
     FirebaseSystem firebaseSystem;
 
     User user;
@@ -27,6 +31,23 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+
+
+        // 만약 로그인 되고 있다면.
+        if(Util.isRunningSessionService(getApplicationContext())){
+            /*
+            Intent intent = new Intent(LoginActivity.this,  MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+             */
+            Intent intent = new Intent();
+            intent.setAction("startMainActivity");
+
+            sendBroadcast(intent);
+        }
+
         loginButton = (ImageView)findViewById(R.id.loginbtn);
         signupButton=  (ImageView)findViewById(R.id.btnRegister);
         idEditText = (EditText)findViewById(R.id.user_id);
@@ -34,13 +55,24 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                id = idEditText.getText().toString();
+                pw = pwEditText.getText().toString();
 
-                firebaseSystem.login(idEditText.getText().toString(), pwEditText.getText().toString());
-
+                if(id.equals("")){
+                    Toast.makeText(getApplicationContext(), "아이디를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else if(pw.equals("")){
+                    Toast.makeText(getApplicationContext(), "비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
+                }
+                else if(id.equals("") && pw.equals("")){
+                    Toast.makeText(getApplicationContext(), "아이디, 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    firebaseSystem.login(id, pw);
+                }
             }
         });
 
@@ -52,4 +84,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
 }
