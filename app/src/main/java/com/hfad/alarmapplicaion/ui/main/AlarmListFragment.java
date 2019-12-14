@@ -219,6 +219,6 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     public void onDestroyView() {
         super.onDestroyView();
 
-        //getContext().unregisterReceiver(alarmListReceiver);
+        getContext().unregisterReceiver(alarmListReceiver);
     }
 }

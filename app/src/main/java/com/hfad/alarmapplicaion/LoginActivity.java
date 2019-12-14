@@ -31,13 +31,29 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+
+
+        // 만약 로그인 되고 있다면.
+        if(Util.isRunningSessionService(getApplicationContext())){
+            /*
+            Intent intent = new Intent(LoginActivity.this,  MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+             */
+            Intent intent = new Intent();
+            intent.setAction("startMainActivity");
+
+            sendBroadcast(intent);
+        }
+
         loginButton = (ImageView)findViewById(R.id.loginbtn);
         signupButton=  (ImageView)findViewById(R.id.btnRegister);
         idEditText = (EditText)findViewById(R.id.user_id);
         pwEditText = (EditText)findViewById(R.id.user_password);
 
         firebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
-
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,4 +84,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
 }
