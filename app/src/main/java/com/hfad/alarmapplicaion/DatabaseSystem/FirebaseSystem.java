@@ -104,6 +104,7 @@ public class FirebaseSystem  {
                             // 유저 정보를 넘겨주면서 메인 액티비티로 이동
                             Toast.makeText(mContext, "로그인 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("user", user);
                             mContext.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
