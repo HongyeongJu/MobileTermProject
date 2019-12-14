@@ -17,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.hfad.alarmapplicaion.AlarmRingingActivity;
+import com.hfad.alarmapplicaion.R;
+
 
 public class AlarmService extends Service {
 
@@ -25,15 +28,35 @@ public class AlarmService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "default";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("알람시작")
+                    .setContentText("알람음이 재생됩니다.")
+                    .setSmallIcon(R.mipmap.ic_launcher)
+
+                    .build();
+
+            startForeground(1, notification);
+        }
+    }
 
     @Override
-    public  void onCreate(){
-        super.onCreate();
-        // Foreground 에서 실행되면 Notification 을 보여줘야 됨
+    public int onStartCommand(Intent intent, int flags, int startId) {
+ /*       // Foreground 에서 실행되면 Notification 을 보여줘야 됨
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Oreo(26) 버전 이후 버전부터는 channel 이 필요함
-            String channelId =  "default";
-            NotificationChannel channel = new NotificationChannel((channelId),"Channel",NotificationManager.IMPORTANCE_DEFAULT);
+            String channelId =  createNotificationChannel();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
             Notification notification = builder.setOngoing(true)
@@ -42,38 +65,30 @@ public class AlarmService extends Service {
                     .build();
 
             startForeground(1, notification);
-           /* String channelId =  createNotificationChannel();
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-            Notification notification = builder.setOngoing(true)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    //.setCategory(Notification.CATEGORY_SERVICE)
-                    .build();
-
-            startForeground(1, notification);*/
-        }
-
-    }
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+        }*/
 
         // 알람창 호출
         Intent intent1 = new Intent(this, AlarmRingingActivity.class);
+        //Intent in = new Intent(this, AlarmActivity.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         intent1.putExtra("Time2",intent.getExtras().getString("Time1"));
         startActivity(intent1);
 
         Log.d("AlarmService", "Alarm");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             stopForeground(true);
         }
 
-        stopSelf();
+        stopSelf();*/
         Log.d("ODH","Service");
         return START_NOT_STICKY;
     }
-
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     private String createNotificationChannel() {
         String channelId = "Alarm";

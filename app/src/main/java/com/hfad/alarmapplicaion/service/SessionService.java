@@ -50,6 +50,7 @@ public class SessionService extends Service {
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
 
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
+
     }
 
     @Override
@@ -115,8 +116,8 @@ public class SessionService extends Service {
 
 
     /* 알람 등록 */
-    private void setAlarm() {
-        this.calendar.set(Calendar.HOUR_OF_DAY, 1);
+    public void setAlarm() {
+        this.calendar.set(Calendar.HOUR_OF_DAY, 2);
         this.calendar.set(Calendar.MINUTE, 8);
         this.calendar.set(Calendar.SECOND, 0);
 

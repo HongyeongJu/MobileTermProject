@@ -11,7 +11,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context1=context;
-        Intent sIntent = new Intent(context, AlarmService.class);
+        Intent sIntent = new Intent(context,AlarmService.class);
 
         //intent.getExtras().getString("Time");
         sIntent.putExtra("Time1",intent.getExtras().getString("Time"));
