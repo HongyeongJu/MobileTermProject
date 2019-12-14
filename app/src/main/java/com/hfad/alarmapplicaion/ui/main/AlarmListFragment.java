@@ -83,19 +83,17 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
 
         //파이어베이스
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
-        mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
+        //mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
 
         listView.setAdapter(adapter);       // 어뎁터 설정한다.
         listView.setOnItemClickListener(this);
         registerForContextMenu(listView);
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
     }
 
     @Override
@@ -215,5 +213,12 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
 
     public void updateListView(){
         mFirebaseSystem.getAlarmRoomList();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        //getContext().unregisterReceiver(alarmListReceiver);
     }
 }

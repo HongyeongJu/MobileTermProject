@@ -93,6 +93,7 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
         mFirebaseSystem.deleteTurnOffListener(chat);
     }
 
@@ -108,4 +109,6 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
             }
         }
     };
+
+
 }

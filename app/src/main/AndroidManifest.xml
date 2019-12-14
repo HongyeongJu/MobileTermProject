@@ -32,6 +32,18 @@
             android:name=".service.SessionService"
             android:enabled="true"
             android:exported="true"></service>
+
+        <service
+            android:name=".AlarmService"
+            android:enabled="true"
+            />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false"
+            />
+
     </application>
 
 </manifest>
