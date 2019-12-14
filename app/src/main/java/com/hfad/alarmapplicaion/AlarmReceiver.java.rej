@@ -1,9 +1,0 @@
-diff a/app/src/main/java/com/hfad/alarmapplicaion/AlarmReceiver.java b/app/src/main/java/com/hfad/alarmapplicaion/AlarmReceiver.java	(rejected hunks)
-@@ -4,7 +4,6 @@
- import android.content.Context;
- import android.content.Intent;
- import android.os.Build;
--import android.util.Log;
- 
- public class AlarmReceiver extends BroadcastReceiver {
-    Context context1;
