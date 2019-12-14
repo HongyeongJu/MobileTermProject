@@ -16,14 +16,30 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 
 public class AlarmService extends Service {
+
+    private static final String CHANNEL_1_ID = "channel1";
+    private NotificationManagerCompat notificationManager;
+    private Notification notification;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        notificationManager = NotificationManagerCompat.from(this); // 노티피케이션 설정
+    }
+
+    public void onDestroy(){ // 서비스가 종료될때
+        super.onDestroy();
+        stopForeground(true);   // 노티피케이션 알람 종료
     }
 
     @Override

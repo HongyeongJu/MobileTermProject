@@ -44,8 +44,8 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
         Intent intent = getIntent();
         chat = (ChatRoom)intent.getSerializableExtra("chatRoom");
 
-        mAlarmRoomTime = (TextView)findViewById(R.id.alarmRoomTitle);
-        mAlarmRoomTitle =(TextView)findViewById(R.id.alarmTime);
+        mAlarmRoomTime = (TextView)findViewById(R.id.alarmTime);
+        mAlarmRoomTitle =(TextView)findViewById(R.id.alarmRoomTitle);
         mBackButton = (Button)findViewById(R.id.backbutton);
 
         mBackButton.setOnClickListener(new View.OnClickListener() {
