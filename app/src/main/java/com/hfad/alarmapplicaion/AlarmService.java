@@ -16,14 +16,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 
 public class AlarmService extends Service {
-
-    private static final String CHANNEL_1_ID = "channel1";
-    private NotificationManagerCompat notificationManager;
-    private Notification notification;
 
     @Nullable
     @Override
@@ -32,22 +27,13 @@ public class AlarmService extends Service {
     }
 
     @Override
-    public void onCreate() {
+    public  void onCreate(){
         super.onCreate();
-        notificationManager = NotificationManagerCompat.from(this); // 노티피케이션 설정
-    }
-
-    public void onDestroy(){ // 서비스가 종료될때
-        super.onDestroy();
-        stopForeground(true);   // 노티피케이션 알람 종료
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
         // Foreground 에서 실행되면 Notification 을 보여줘야 됨
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Oreo(26) 버전 이후 버전부터는 channel 이 필요함
-            String channelId =  createNotificationChannel();
+            String channelId =  "default";
+            NotificationChannel channel = new NotificationChannel((channelId),"Channel",NotificationManager.IMPORTANCE_DEFAULT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
             Notification notification = builder.setOngoing(true)
@@ -56,13 +42,24 @@ public class AlarmService extends Service {
                     .build();
 
             startForeground(1, notification);
+           /* String channelId =  createNotificationChannel();
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
+            Notification notification = builder.setOngoing(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    //.setCategory(Notification.CATEGORY_SERVICE)
+                    .build();
+
+            startForeground(1, notification);*/
         }
+
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         // 알람창 호출
         Intent intent1 = new Intent(this, AlarmRingingActivity.class);
-        //Intent in = new Intent(this, AlarmActivity.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         intent1.putExtra("Time2",intent.getExtras().getString("Time1"));
         startActivity(intent1);
 
@@ -73,7 +70,7 @@ public class AlarmService extends Service {
         }
 
         stopSelf();
-
+        Log.d("ODH","Service");
         return START_NOT_STICKY;
     }
 
