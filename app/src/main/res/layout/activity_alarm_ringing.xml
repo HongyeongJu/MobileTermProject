@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/upperbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        app:srcCompat="@drawable/bar" />
+
+    <ImageView
         android:id="@+id/imageView"
-        android:layout_width="212dp"
-        android:layout_height="212dp"
+        android:layout_width="204dp"
+        android:layout_height="195dp"
         android:layout_gravity="center"
-        android:layout_margin="30dp"
-        app:srcCompat="@drawable/alarmclock" />
+        app:srcCompat="@drawable/ring"
+        android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/textTime"
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="40dp"
         android:gravity="center"
-        android:layout_margin="30dp"
         android:text="12:00" />
 
     <TextView
@@ -27,14 +34,23 @@
         android:layout_height="wrap_content"
         android:textSize="25dp"
         android:gravity="center"
-        android:layout_margin="30dp"
+        android:layout_marginTop="10dp"
         android:text="버튼을 눌러 알람을 종료하세요." />
 
     <Button
-        android:id="@+id/btnClose"
+        android:id="@+id/checkingbutton"
         android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:text="확인"
         android:textSize="25dp" />
+
+    <ImageView
+        android:id="@+id/underbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bar"
+        android:layout_weight="1.5"/>
+
 </LinearLayout>
