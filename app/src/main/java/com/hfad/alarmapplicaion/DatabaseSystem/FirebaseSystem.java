@@ -228,6 +228,8 @@ public class FirebaseSystem  {
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
 
             }
+
+
         });
     }
 
@@ -346,6 +348,7 @@ public class FirebaseSystem  {
     public void deleteAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
         String chatRoomId = chatRoom.roomTitle;
 
+        /*
         mChatRoomDatabaseReference.child(chatRoomId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -361,6 +364,28 @@ public class FirebaseSystem  {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+         */
+
+        mChatRoomDatabaseReference.child(chatRoomId).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                ChatRoom chat = dataSnapshot.getValue(ChatRoom.class);
+                if(chat.owner.equals(myUserInfo.id)){       // 자신이 방장이면
+                    dataSnapshot.getRef().removeValue();
+                    Toast.makeText(mContext, "방을 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "방장만 방을 없엘 수가 있습니다. ", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -382,8 +407,11 @@ public class FirebaseSystem  {
     }
 
     // 현재 내가 참여하고 있는 알람룸 리스트를 브로드 캐스트로 전송한다.
+    // 현재 참여 하고 있는 알람룸 리스트 반환 안됨?  -> 오류 발견 :  runTransaction에서는 Toast메시지 출력 불가.
     public void getMyAlarmRoomList(final User myUserInfo){
         final ArrayList<ChatRoom> myChats = new ArrayList<ChatRoom>();
+        // 예전 코드
+        /*
         mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -393,20 +421,14 @@ public class FirebaseSystem  {
                     ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
                     for(RoomPeople people : peoples ){  //전부 검사
                         if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
+                            Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
                             ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
                             myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
                         }
                     }
                 }
-/*
-데이터가 있는지 확인 완료
-                for(ChatRoom chat : myChats){
-                    Toast.makeText(mContext, chat.roomTitle, Toast.LENGTH_SHORT).show();
-                }
-
-
- */
                 // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
+                //Toast.makeText(mContext, String.valueOf(myChats.size()), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent("myAlarmList");
                 intent.putExtra("myAlarmList", myChats);
                 mContext.sendBroadcast(intent);
@@ -418,6 +440,40 @@ public class FirebaseSystem  {
 
             }
         });
+
+         */
+
+        mChatRoomDatabaseReference.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                for(MutableData postSnapshot : mutableData.getChildren()){
+                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};
+                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
+                    for(RoomPeople people : peoples){
+                        if(people.id.equals(myUserInfo.id)){
+                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
+                            myChats.add(chat);
+                        }
+                    }
+                }
+                Log.d("MyAlarmListSize", String.valueOf(myChats.size()));
+                Intent intent = new Intent("myAlarmList");
+                intent.putExtra("myAlarmList", myChats);
+                mContext.sendBroadcast(intent);
+
+
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+
+                Toast.makeText(mContext,"되라", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     // 현재 Shop의 아이템의 리스트를 받아오는 메소드
     public void getShopListItem(){

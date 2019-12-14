@@ -96,9 +96,9 @@ public class SessionService extends Service {
                 //Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("myAlarmList");
                 for(ChatRoom chat : chats){
-                    //Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
                 }
-
+                
                 setAlarm();
             }else if(action.equals("startMainActivity")){
                 // MainActivity 출력하도록함.
@@ -114,6 +114,9 @@ public class SessionService extends Service {
 
     /* 알람 등록 */
     private void setAlarm() {
+
+        Log.d("ddd","ddd");
+        //Toast.makeText(getApplicationContext(), String.valueOf(chats.size()), Toast.LENGTH_SHORT).show();
 
         for(ChatRoom chat : chats){
             // 알람 시간 설정

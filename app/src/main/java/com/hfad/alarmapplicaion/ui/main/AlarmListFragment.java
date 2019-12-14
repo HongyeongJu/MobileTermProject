@@ -93,7 +93,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     @Override
     public void onResume() {
         super.onResume();
-
+        //mFirebaseSystem.getMyAlarmRoomList(myUserInfo);         // 현재 내가 가입한 알람룸 리스트 갱신한다.  -> 좀 아닌듯하다.
 
     }
 
