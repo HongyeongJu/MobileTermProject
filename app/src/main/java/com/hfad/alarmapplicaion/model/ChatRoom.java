@@ -6,6 +6,7 @@ import java.util.List;
 // 알람룸인데. 오타뜸.
 public class ChatRoom implements Serializable {
 
+    public long number = 0;
     public String roomTitle;       // 방제목
     public int hour;           // 시
     public int minute;         // 분
@@ -46,5 +47,9 @@ public class ChatRoom implements Serializable {
         this.friday = fri;
         this.saturday = sat;
         this.sunday = sun;
+    }
+
+    public void setNumber(long number){
+        this.number = number;
     }
 }

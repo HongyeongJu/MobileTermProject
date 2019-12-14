@@ -14,6 +14,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
@@ -208,27 +210,40 @@ public class FirebaseSystem  {
     public void addChatRoom(final ChatRoom chatRoom){
         final String id = chatRoom.roomTitle;
 
-        mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                isId =false;
 
-                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
-                    String postId = postSnapShot.getKey();      // id 받아내기
-                    if(postId.equals(id)){      // 서버에 등록된 알람방 id가 현재 만들고자하는 id랑 같을경우 .예외발생
+        mChatRoomDatabaseReference.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                isId = false;
+                long room_number = 0;
+
+                for(MutableData postSnapshot : mutableData.getChildren()){
+                    String postId = postSnapshot.getKey();      //id 받아내기
+
+                    //number는 각 알람방의 고유 번호이다.
+                    ChatRoom chatRoom1 = postSnapshot.getValue(ChatRoom.class);
+                    // 각 원소들의 number를 받아와서 . 비교를 한다.
+                    if(room_number <= chatRoom1.number){
+                        room_number = chatRoom1.number+1;
+                    }
+
+                    if(postId.equals(id)){ // 서버에 등록된 알람방 id가 현재 만들고자하는 id랑 같을경우 .예외발생
                         isId = true;
                         Toast.makeText(mContext, "같은 방제목을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if(!isId){      // 아이디가 없으면 알람방을 추가한다.
-                    mChatRoomDatabaseReference.child(id).setValue(chatRoom);
-                    Toast.makeText(mContext, "방이 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                if(!isId){
+                    chatRoom.setNumber(room_number);
+                    mutableData.child(id).setValue(chatRoom);
                 }
+
+                return Transaction.success(mutableData);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                Toast.makeText(mContext,"방이 등록되었습니다. " ,Toast.LENGTH_SHORT).show();
             }
         });
     }
