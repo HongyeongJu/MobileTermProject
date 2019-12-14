@@ -27,13 +27,11 @@ public class AlarmService extends Service {
     }
 
     @Override
-    public  void onCreate(){
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
         // Foreground 에서 실행되면 Notification 을 보여줘야 됨
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Oreo(26) 버전 이후 버전부터는 channel 이 필요함
-            String channelId =  "default";
-            NotificationChannel channel = new NotificationChannel((channelId),"Channel",NotificationManager.IMPORTANCE_DEFAULT);
+            String channelId =  createNotificationChannel();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
             Notification notification = builder.setOngoing(true)
@@ -42,24 +40,13 @@ public class AlarmService extends Service {
                     .build();
 
             startForeground(1, notification);
-           /* String channelId =  createNotificationChannel();
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-            Notification notification = builder.setOngoing(true)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    //.setCategory(Notification.CATEGORY_SERVICE)
-                    .build();
-
-            startForeground(1, notification);*/
         }
-
-    }
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
 
         // 알람창 호출
         Intent intent1 = new Intent(this, AlarmRingingActivity.class);
+        //Intent in = new Intent(this, AlarmActivity.class);
         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         intent1.putExtra("Time2",intent.getExtras().getString("Time1"));
         startActivity(intent1);
 

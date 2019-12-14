@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -17,8 +18,10 @@ import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 // 로그인 되면 로그인 세션을 유지하는 서비스이다.
@@ -27,7 +30,7 @@ public class SessionService extends Service {
     public static String receiveUser = "getUser";
 
     private Calendar calendar;
-
+    String strtime;
     public FirebaseSystem mFirebaseSystem;
 
     public ArrayList<ChatRoom> chats;
@@ -99,8 +102,35 @@ public class SessionService extends Service {
 
     /* 알람 등록 */
     private void setAlarm() {
+        this.calendar.set(Calendar.HOUR_OF_DAY, 1);
+        this.calendar.set(Calendar.MINUTE, 8);
+        this.calendar.set(Calendar.SECOND, 0);
 
-        for(ChatRoom chat : chats){
+        //this.calendar.set(Calendar.HOUR_OF_DAY,H);
+        //this.calendar.set(Calendar.HOUR_OF_DAY,M);
+        // Receiver 설정
+        if (this.calendar.before(Calendar.getInstance())) {
+            Toast.makeText(this, "알람시간이 현재시간보다 이전일 수 없습니다.", Toast.LENGTH_LONG).show();
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            Log.d("ODH","SETTING_TOMMROW");
+        }
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
+        strtime=format.format(calendar.getTime());
+        // Receiver 설정
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("Time",strtime);
+
+        //cnt 대신 리퀘스트코드
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+        // 알람 설정
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24,pendingIntent);
+        // Toast 보여주기 (알람 시간 표시)
+        Toast.makeText(this, "Alarm : " + format.format(calendar.getTime()), Toast.LENGTH_LONG).show();
+
+ /*       for(ChatRoom chat : chats){
             // 알람 시간 설정
             Log.d("chat.hour", String.valueOf(chat.hour));
             Log.d("chat.minute", String.valueOf(chat.minute));
@@ -120,8 +150,8 @@ public class SessionService extends Service {
             // 알람 설정
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
-        }
+        }*/
 
-
+        Log.d("ODH","Alarm Complete");
     }
 }
