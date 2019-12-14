@@ -21,7 +21,7 @@
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="40dp"
@@ -38,7 +38,7 @@
         android:text="버튼을 눌러 알람을 종료하세요." />
 
     <Button
-        android:id="@+id/checkingbutton"
+        android:id="@+id/btnClose"
         android:layout_width="155dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
