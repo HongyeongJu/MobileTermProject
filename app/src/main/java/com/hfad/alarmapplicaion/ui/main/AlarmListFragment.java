@@ -78,6 +78,7 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         //파이어베이스
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
         mFirebaseSystem.getAlarmRoomList();         // 파이어베이스로 부터 Broadcast로 알람방 리스트의 데이터를 받아오는 메소드
+        mFirebaseSystem.getMyAlarmRoomList(myUserInfo);         // 현재 내가 참여한 알람방의 list를 세션 서비스에 받도록한다.
 
         listView.setAdapter(adapter);       // 어뎁터 설정한다.
         listView.setOnItemClickListener(this);

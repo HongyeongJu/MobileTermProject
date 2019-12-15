@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 public class AlarmReceiver extends BroadcastReceiver {
    Context context1;
     @Override
     public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context, "리시버 불림", Toast.LENGTH_SHORT).show();
         this.context1=context;
         Intent sIntent = new Intent(context,AlarmService.class);
 

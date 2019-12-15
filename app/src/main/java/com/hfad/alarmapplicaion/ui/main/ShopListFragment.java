@@ -139,4 +139,11 @@ public class ShopListFragment extends Fragment {
             }
         }
     };
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        getContext().unregisterReceiver(broadcastReceiver);
+    }
 }

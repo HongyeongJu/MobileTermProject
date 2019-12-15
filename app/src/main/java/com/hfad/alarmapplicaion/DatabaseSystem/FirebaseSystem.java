@@ -128,23 +128,7 @@ public class FirebaseSystem  {
         return true;
     }
 
-    public User getUser(String id){
 
-        mUsersDatabaseReference.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tempUser = dataSnapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-        return tempUser;
-    }
     private boolean isId;
     // 회원을 추가하는 메소드
     public boolean addUser(final User user)  {
@@ -271,16 +255,17 @@ public class FirebaseSystem  {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 Toast.makeText(mContext,"방이 등록되었습니다. " ,Toast.LENGTH_SHORT).show();
-
-
+                updateMyAlarmLists();
             }
         });
+
     }
 
     // 알람룸 정보를 받고 그 알람룸 정보와 지금 현재 userInfo 정보로 알람룸 참가 리스트 삭제하는 메소드
     public void deleteRoomMemeberFromAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
 
         String chatRoomId = chatRoom.roomTitle;
+        /*
         mChatRoomDatabaseReference.child(chatRoomId).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -305,12 +290,43 @@ public class FirebaseSystem  {
 
             }
         });
+
+         */
+        mChatRoomDatabaseReference.child(chatRoomId).child("peoples").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                String index = null;
+
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    RoomPeople people = postSnapShot.getValue(RoomPeople.class);
+                    if(myUserInfo.id.equals(people.id)){        // 같다면.
+                        index = postSnapShot.getKey();
+                    }
+                }
+                if(index != null){// 해당 위치에 있는 회원 삭제
+                    dataSnapshot.getRef().child(index).removeValue();   // 삭제
+                    Toast.makeText(mContext, "탈퇴하였습니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "회원이 없습니다. ", Toast.LENGTH_SHORT).show();
+                }
+                updateMyAlarmLists();
+            }
+        });
+
     }
 
     // 알람룸 정보와 유저 정보를 받고 알람룸에 멤버를 추가하는 메소드
     public void addRoomMemberFromAlarmRoom(final ChatRoom chatRoom, final User myUserInfo){
         String chatRoomId = chatRoom.roomTitle;
 
+        /*
         mChatRoomDatabaseReference.child(chatRoomId).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -339,6 +355,42 @@ public class FirebaseSystem  {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+         */
+
+        mChatRoomDatabaseReference.child(chatRoomId).child("peoples").runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                boolean isHere = false;
+                String lastNumStr = null;
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    RoomPeople people = postSnapShot.getValue(RoomPeople.class);
+                    if(myUserInfo.id.equals(people.id)){        // 같다면? (이 방에 이미 참여하고 있다는 뜻)
+                        isHere = true;
+                    }
+                    lastNumStr = postSnapShot.getKey();
+                }
+                int lastNum = Integer.valueOf(lastNumStr);
+
+                if(isHere){
+                    Toast.makeText(mContext, "이미 이 방에 참여하고 있습니다.", Toast.LENGTH_SHORT).show();
+                }else if(lastNum > 8){
+                    Toast.makeText(mContext, "방인원수는 8명이 제한입니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    lastNum++;
+                    RoomPeople people = new RoomPeople(myUserInfo.id, false, myUserInfo.gender, myUserInfo.phoneNumber);
+                    dataSnapshot.getRef().child(String.valueOf(lastNum)).setValue(people);
+                }
+                updateMyAlarmLists();
             }
         });
     }
@@ -386,8 +438,10 @@ public class FirebaseSystem  {
                 }else {
                     Toast.makeText(mContext, "방장만 방을 없엘 수가 있습니다. ", Toast.LENGTH_SHORT).show();
                 }
+                updateMyAlarmLists();
             }
         });
+
     }
 
     public void updateAlarmRoom(final ChatRoom chatRoom, final int hour, final int min, final boolean[] days){
@@ -470,7 +524,7 @@ public class FirebaseSystem  {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
 
-                Toast.makeText(mContext,"되라", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext,"되라", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -531,6 +585,12 @@ public class FirebaseSystem  {
 
         }
     };
+
+    public void updateMyAlarmLists(){
+        // SessionService의 updateMyAlarmList의 브로드캐스트를 호출해서 이 클래스의 getMyAlarmRoomList 함수를 가져온다.
+        Intent intent = new Intent("updateMyAlarmList");
+        mContext.sendBroadcast(intent);
+    }
 
     public void addTurnOffListener(final ChatRoom chatRoom){
 

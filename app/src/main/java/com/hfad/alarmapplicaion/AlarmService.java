@@ -8,17 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-/*import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;*/
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.hfad.alarmapplicaion.AlarmRingingActivity;
-import com.hfad.alarmapplicaion.R;
+/*import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;*/
 
 
 public class AlarmService extends Service {
@@ -44,7 +42,6 @@ public class AlarmService extends Service {
                     .setContentTitle("알람시작")
                     .setContentText("알람음이 재생됩니다.")
                     .setSmallIcon(R.mipmap.ic_launcher)
-
                     .build();
 
             startForeground(1, notification);
