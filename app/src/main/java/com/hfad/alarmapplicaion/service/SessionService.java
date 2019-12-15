@@ -38,7 +38,10 @@ public class SessionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        calendar = Calendar.getInstance();
+
+
+
+
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("getUser");
@@ -139,7 +142,6 @@ public class SessionService extends Service {
         }
     };
 
-
     /* 알람 등록 */
     public void setAlarm() {
        /* this.calendar.set(Calendar.HOUR_OF_DAY, 2);
@@ -170,25 +172,47 @@ public class SessionService extends Service {
         // Toast 보여주기 (알람 시간 표시)
         Toast.makeText(this, "Alarm : " + format.format(calendar.getTime()), Toast.LENGTH_LONG).show();*/
 
-        Log.i("chats 의 사이즈", String.valueOf(chats.size()));
+        //Log.i("chats 의 사이즈", String.valueOf(chats.size()));
+
+
         for(ChatRoom chat : chats){
             // 알람 시간 설정
-            Log.i("chat.id", String.valueOf(chat.roomTitle));
-            Log.i("chat.hour", String.valueOf(chat.hour));
-            Log.i("chat.minute", String.valueOf(chat.minute));
+          //  Log.i("chat.id", String.valueOf(chat.roomTitle));
+           // Log.i("chat.hour", String.valueOf(chat.hour));
+            //Log.i("chat.minute", String.valueOf(chat.minute));
 
+            /*
             this.calendar.set(Calendar.HOUR_OF_DAY, chat.hour);
             this.calendar.set(Calendar.MINUTE, chat.minute);
             this.calendar.set(Calendar.SECOND, 0);
+
+             */
+            calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month= calendar.get(Calendar.MONTH) +1;
+
+            calendar.set(year, month,
+                    calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
+
 
             //this.calendar.set(Calendar.HOUR_OF_DAY,H);
             //this.calendar.set(Calendar.HOUR_OF_DAY,M);
             // Receiver 설정
             if (this.calendar.before(Calendar.getInstance())) {
                 Toast.makeText(this, "알람시간이 현재시간보다 이전일 수 없습니다.", Toast.LENGTH_LONG).show();
-                calendar.add(Calendar.DAY_OF_YEAR, 1);
-               // Log.d("ODH","SETTING_TOMMROW");
+                //calendar.set(Calendar.DAY_OF_YEAR, Calendar.YEAR + 1);
+                calendar.set(year + 1, month,
+                        calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
+            }else {
+                calendar.set(year, month, calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
             }
+
+            Log.i("calendar time", String.valueOf(year) + "년" +
+                    String.valueOf(month) +"월" +
+                    String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "일" +
+                    String.valueOf(chat.hour) + "시" +
+                    String.valueOf(chat.minute)+ "분" +
+                    String.valueOf(0) + "초");
             //실험
             //Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 
@@ -199,7 +223,9 @@ public class SessionService extends Service {
             // 알람 설정
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
+            Log.i("calendar Time", String.valueOf(calendar.getTimeInMillis()));
             Log.i("ODH","Alarm Complete");
+
         }
 
 
