@@ -465,42 +465,15 @@ public class FirebaseSystem  {
     public void getMyAlarmRoomList(final User myUserInfo){
         final ArrayList<ChatRoom> myChats = new ArrayList<ChatRoom>();
         // 예전 코드
-        /*
-        mChatRoomDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
 
-                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>(){};      // Gerneric한 데이터를 사용해서 firebase로부터 데이터를 받으려면 사용해야됨.
-                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
-                    for(RoomPeople people : peoples ){  //전부 검사
-                        if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
-                            Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
-                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
-                            myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
-                        }
-                    }
-                }
-                // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
-                //Toast.makeText(mContext, String.valueOf(myChats.size()), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent("myAlarmList");
-                intent.putExtra("myAlarmList", myChats);
-                mContext.sendBroadcast(intent);
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-         */
 
         mChatRoomDatabaseReference.runTransaction(new Transaction.Handler() {
             @NonNull
             @Override
+            // 단순히 트랜잭션으로 데이터를 받아오면. 데이터 처리 타입 오류 발생함. 따라서 순간 입력 받기 모드로 구현함.
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                /*
                 for(MutableData postSnapshot : mutableData.getChildren()){
                     GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};
                     ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
@@ -516,15 +489,29 @@ public class FirebaseSystem  {
                 intent.putExtra("myAlarmList", myChats);
                 mContext.sendBroadcast(intent);
 
-
+                 */
 
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
 
-                //Toast.makeText(mContext,"되라", Toast.LENGTH_SHORT).show();
+                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>(){};      // Gerneric한 데이터를 사용해서 firebase로부터 데이터를 받으려면 사용해야됨.
+                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
+                    for(RoomPeople people : peoples ){  //전부 검사
+                        if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
+                            Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
+                            myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
+                        }
+                    }
+                }
+                // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
+                Intent intent = new Intent("myAlarmList");
+                intent.putExtra("myAlarmList", myChats);
+                mContext.sendBroadcast(intent);
             }
         });
 

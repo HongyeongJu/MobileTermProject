@@ -145,35 +145,8 @@ public class SessionService extends Service {
 
     /* 알람 등록 */
     public void setAlarm() {
-       /* this.calendar.set(Calendar.HOUR_OF_DAY, 2);
-        this.calendar.set(Calendar.MINUTE, 35);
-        this.calendar.set(Calendar.SECOND, 0);
 
-        //this.calendar.set(Calendar.HOUR_OF_DAY,H);
-        //this.calendar.set(Calendar.HOUR_OF_DAY,M);
-        // Receiver 설정
-        if (this.calendar.before(Calendar.getInstance())) {
-            Toast.makeText(this, "알람시간이 현재시간보다 이전일 수 없습니다.", Toast.LENGTH_LONG).show();
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
-            Log.d("ODH","SETTING_TOMMROW");
-        }
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
-        strtime=format.format(calendar.getTime());
-        // Receiver 설정
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        intent.putExtra("Time",strtime);
-
-        //cnt 대신 리퀘스트코드
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-
-        // 알람 설정
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*60*60*24,pendingIntent);
-        // Toast 보여주기 (알람 시간 표시)
-        Toast.makeText(this, "Alarm : " + format.format(calendar.getTime()), Toast.LENGTH_LONG).show();*/
-
-        //Log.i("chats 의 사이즈", String.valueOf(chats.size()));
+        Log.i("setAlarm 설정", "setAlarm설정");
         todayCalendar = Calendar.getInstance();
         Log.i("현재 시간 ", String.valueOf(todayCalendar.get(Calendar.YEAR)) + "년" +
                 String.valueOf(todayCalendar.get(Calendar.MONTH)) +"월" +
@@ -193,16 +166,9 @@ public class SessionService extends Service {
                     calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
 
 
-            //this.calendar.set(Calendar.HOUR_OF_DAY,H);
-            //this.calendar.set(Calendar.HOUR_OF_DAY,M);
-            // Receiver 설정
-
             Log.i("Calendar.getInstance()", String.valueOf(Calendar.getInstance()));
             if (calendar.before(todayCalendar)) {
-                //Toast.makeText(this, "알람시간이 현재시간보다 이전일 수 없습니다.", Toast.LENGTH_LONG).show();
-                //calendar.set(Calendar.DAY_OF_YEAR, Calendar.YEAR + 1);
-                //calendar.set(year + 1, month,
-                 //       calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
+
                 Log.i("Alarm Time", "알람시간이 현재시간보다 이전 일 수 없음.");
             }else {
                 // 현재 시간 이후로 알람을 설정한다.
@@ -221,11 +187,6 @@ public class SessionService extends Service {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
             }
-
-
-            //실험
-            //Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-
 
             Log.i("calendar Time", String.valueOf(calendar.getTimeInMillis()));
             Log.i("ODH","Alarm Complete");
