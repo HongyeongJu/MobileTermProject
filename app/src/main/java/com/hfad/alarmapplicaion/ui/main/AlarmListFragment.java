@@ -83,6 +83,10 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
         listView.setAdapter(adapter);       // 어뎁터 설정한다.
         listView.setOnItemClickListener(this);
         registerForContextMenu(listView);
+
+
+        // 알람방이 추가되면 자동으로 갱신되도록 리스너 추가
+        mFirebaseSystem.setAddChatRoomListener();
     }
 
 

@@ -589,4 +589,41 @@ public class FirebaseSystem  {
         String chatRoomId = chatRoom.roomTitle;
         mChatRoomDatabaseReference.child(chatRoomId).removeEventListener(addTurnOffListener1);
     }
+
+    // 알람방의 상태를 예의 주시하여 어떠한 변화가 있을 때 자신의 알람리스트 갱신을 한다.
+    ChildEventListener addChatRoomListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            getAlarmRoomList();     // 추가되면 리스트뷰를 자동으로 갱신하도록 만듬.
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            /*
+            Intent intent = new Intent("updateMyAlarmList");
+            mContext.sendBroadcast(intent);
+
+             */
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    // 전체 알람방에서 리스트의 엔티티가 추가되거나 삭제되거나 수정되었을 때 다같이 알람 내용이 바뀌도록 설정하는 리스너
+    public void setAddChatRoomListener(){
+        mChatRoomDatabaseReference.addChildEventListener(addChatRoomListener);
+    }
 }
