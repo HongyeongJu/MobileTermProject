@@ -607,49 +607,44 @@ public class FirebaseSystem  {
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
             ArrayList<RoomPeople> arrayList = (ArrayList)chatRoom.peoples;
+            boolean isHere = false;
 
             for(RoomPeople people : arrayList){
-                Log.i("peoples", String.valueOf(people.id
-                ));
+                //Log.i("peoples", String.valueOf(people.id));
                 Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                if(people.id.equals(myUserInfo.id)){
+                    isHere = true;              // 참여하고 있으면
+                }
             }
-            /*
-            Intent intent = new Intent("updateMyAlarmList");
-            mContext.sendBroadcast(intent);
 
-             */
+            // 내가 참여한 방이 바뀌면 알람 리스트도 바꿔야되고 전체 알람룸 리스트를 바꿔줘야됨.
+            getAlarmRoomList();     // 알람룸 리스트 갱신
+            if(isHere){// 참여한 방이 바뀌면 내가 가입한 알람리스트를 갱신한다.
+                Intent intent = new Intent("updateMyAlarmList");        // 내가 가입한 알람리스트를 갱신해준다.
+                mContext.sendBroadcast(intent);
+            }
         }
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
+            ArrayList<RoomPeople> arrayList = (ArrayList)chatRoom.peoples;
+            boolean isHere = false;
 
-        }
+            for(RoomPeople people : arrayList){
+                //Log.i("peoples", String.valueOf(people.id));
+                Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                if(people.id.equals(myUserInfo.id)){
+                    isHere = true;              // 참여하고 있으면
+                }
+            }
 
-        @Override
-        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-        }
-    };
-
-    ChildEventListener changeChatRoomListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-        }
-
-        @Override
-        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+            // 내가 참여한 방이 바뀌면 알람 리스트도 바꿔야되고 전체 알람룸 리스트를 바꿔줘야됨.
+            getAlarmRoomList();     // 알람룸 리스트 갱신
+            if(isHere){// 참여한 방이 바뀌면 내가 가입한 알람리스트를 갱신한다.
+                Intent intent = new Intent("updateMyAlarmList");        // 내가 가입한 알람리스트를 갱신해준다.
+                mContext.sendBroadcast(intent);
+            }
         }
 
         @Override
