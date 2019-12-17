@@ -37,6 +37,7 @@ public class FirebaseSystem  {
     private static FirebaseSystem firebaseSystem;           // 싱글톤 패턴으로 현재 클래스 객체
     private static Context mContext;
 
+    private User myUserInfo;
     private boolean isuserId = false;
     private User tempUser;      // 임시로 User데이터 조작을 위한 객체
 
@@ -473,45 +474,50 @@ public class FirebaseSystem  {
             @Override
             // 단순히 트랜잭션으로 데이터를 받아오면. 데이터 처리 타입 오류 발생함. 따라서 순간 입력 받기 모드로 구현함.
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-                /*
-                for(MutableData postSnapshot : mutableData.getChildren()){
-                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};
-                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
-                    for(RoomPeople people : peoples){
-                        if(people.id.equals(myUserInfo.id)){
-                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
-                            myChats.add(chat);
+                try{
+                    for(MutableData postSnapshot : mutableData.getChildren()){
+                        GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};
+                        ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
+                        for(RoomPeople people : peoples){
+                            if(people.id.equals(myUserInfo.id)){
+                                ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
+                                myChats.add(chat);
+                            }
                         }
                     }
+                    Log.d("MyAlarmListSize", String.valueOf(myChats.size()));
+                    Intent intent = new Intent("myAlarmList");
+                    intent.putExtra("myAlarmList", myChats);
+                    mContext.sendBroadcast(intent);
+                }catch(Exception e){
+
                 }
-                Log.d("MyAlarmListSize", String.valueOf(myChats.size()));
-                Intent intent = new Intent("myAlarmList");
-                intent.putExtra("myAlarmList", myChats);
-                mContext.sendBroadcast(intent);
-
-                 */
-
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                try{
+                    for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
 
-                    GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>(){};      // Gerneric한 데이터를 사용해서 firebase로부터 데이터를 받으려면 사용해야됨.
-                    ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
-                    for(RoomPeople people : peoples ){  //전부 검사
-                        if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
-                            Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
-                            ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
-                            myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
+                        GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>(){};      // Gerneric한 데이터를 사용해서 firebase로부터 데이터를 받으려면 사용해야됨.
+                        ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
+                        for(RoomPeople people : peoples ){  //전부 검사
+                            if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
+                                Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                                ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
+                                myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
+                            }
                         }
                     }
+                    // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
+                    Intent intent = new Intent("myAlarmList");
+                    intent.putExtra("myAlarmList", myChats);
+                    mContext.sendBroadcast(intent);
+                }catch(Exception e){
+
                 }
-                // 브로드 케스트로 서비스에 보내고  서비스에는 데이터베이스를 업데이트를 하고 다음 알람 서비스를 업데이트를 한다.
-                Intent intent = new Intent("myAlarmList");
-                intent.putExtra("myAlarmList", myChats);
-                mContext.sendBroadcast(intent);
+
             }
         });
 
@@ -548,7 +554,7 @@ public class FirebaseSystem  {
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
+            //Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
             // 주소값은 https://alarmapplicaion.firebaseio.com/chatroom/hjhgg/peoples 이다. 즉 people 값의 어레이리스트로 받으면 된다.
             GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
             ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
@@ -590,7 +596,7 @@ public class FirebaseSystem  {
         mChatRoomDatabaseReference.child(chatRoomId).removeEventListener(addTurnOffListener1);
     }
 
-    // 알람방의 상태를 예의 주시하여 어떠한 변화가 있을 때 자신의 알람리스트 갱신을 한다.
+    // 알람 데이터베이스가 추가가 되면 리스너를 통해 수신을 해서 다른 사람들도 갱신을 할 수 있도록 한다.
     ChildEventListener addChatRoomListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -599,6 +605,14 @@ public class FirebaseSystem  {
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
+            ArrayList<RoomPeople> arrayList = (ArrayList)chatRoom.peoples;
+
+            for(RoomPeople people : arrayList){
+                Log.i("peoples", String.valueOf(people.id
+                ));
+                Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+            }
             /*
             Intent intent = new Intent("updateMyAlarmList");
             mContext.sendBroadcast(intent);
@@ -622,8 +636,39 @@ public class FirebaseSystem  {
         }
     };
 
+    ChildEventListener changeChatRoomListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     // 전체 알람방에서 리스트의 엔티티가 추가되거나 삭제되거나 수정되었을 때 다같이 알람 내용이 바뀌도록 설정하는 리스너
-    public void setAddChatRoomListener(){
+    public void setAddChatRoomListener(User myUserInfo){
+        this.myUserInfo = myUserInfo;
         mChatRoomDatabaseReference.addChildEventListener(addChatRoomListener);
+    }
+    public void deleteAddChatRoomListener(){
+        mChatRoomDatabaseReference.removeEventListener(addChatRoomListener);
     }
 }

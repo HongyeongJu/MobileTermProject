@@ -56,6 +56,8 @@ public class SessionService extends Service {
 
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
+
+
     }
 
     @Override
@@ -72,6 +74,7 @@ public class SessionService extends Service {
 
 
         mFirebaseSystem.getMyAlarmRoomList(myUserInfo);
+        mFirebaseSystem.setAddChatRoomListener(myUserInfo);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -79,6 +82,7 @@ public class SessionService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        mFirebaseSystem.deleteAddChatRoomListener();
         Toast.makeText(getApplicationContext(), "현재 유저" + myUserInfo.id +"님이 종료했습니다. " , Toast.LENGTH_SHORT).show();        // 로그아웃
     }
 
