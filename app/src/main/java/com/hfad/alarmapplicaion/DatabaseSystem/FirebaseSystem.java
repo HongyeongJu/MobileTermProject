@@ -591,11 +591,15 @@ public class FirebaseSystem  {
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             //Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
             // 주소값은 https://alarmapplicaion.firebaseio.com/chatroom/hjhgg/peoples 이다. 즉 people 값의 어레이리스트로 받으면 된다.
-            GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
-            ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
-            Intent intent = new Intent("updateMemeberState");
-            intent.putExtra("updateMemeberState", peoples);
-            mContext.sendBroadcast(intent);
+            try{
+                GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
+                ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
+                Intent intent = new Intent("updateMemeberState");
+                intent.putExtra("updateMemeberState", peoples);
+                mContext.sendBroadcast(intent);
+            }catch(Exception e){
+
+            }
         }
 
         @Override
