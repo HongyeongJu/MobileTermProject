@@ -528,6 +528,7 @@ public class FirebaseSystem  {
         });
 
     }
+
     // 현재 Shop의 아이템의 리스트를 받아오는 메소드
     public void getShopListItem(){
         mShopDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -550,6 +551,17 @@ public class FirebaseSystem  {
             }
         });
     }
+
+    public void getMyPoint(final User myUserInfo){
+        try {
+            Intent intent = new Intent("getMyPoint");
+            intent.putExtra("getMyPoint", myUserInfo.point);
+            mContext.sendBroadcast(intent);
+        }catch (Exception e){
+
+        }
+    }
+
 
     //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
     ChildEventListener addTurnOffListener1 = new ChildEventListener() {
