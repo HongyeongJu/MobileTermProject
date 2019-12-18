@@ -42,6 +42,13 @@ public class SensorService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
 
+
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("ODH_SENSOR","SENSOR");
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerormeterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -50,13 +57,6 @@ public class SensorService extends Service implements SensorEventListener {
         countDownTimer.start();
         if (accelerormeterSensor != null)
             sensorManager.registerListener(this, accelerormeterSensor, SensorManager.SENSOR_DELAY_GAME);
-
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
 
         roomTitle = intent.getStringExtra("roomTitle");
         userId = intent.getStringExtra("userId");
