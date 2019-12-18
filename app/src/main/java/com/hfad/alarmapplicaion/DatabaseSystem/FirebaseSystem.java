@@ -562,8 +562,25 @@ public class FirebaseSystem  {
         }
     }
 
+    public void usePoint(final int p, final String userId) {
+        mUsersDatabaseReference.child(userId).child("point").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int point = dataSnapshot.getValue(Integer.class) - p;
+                dataSnapshot.getRef().setValue(point);
 
-    //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
+                Intent intent = new Intent("changeUserState");
+                mContext.sendBroadcast(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+        //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
     ChildEventListener addTurnOffListener1 = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -790,4 +807,48 @@ public class FirebaseSystem  {
         //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStateUserListener);
         mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
     }
+
+    ChildEventListener ChangeStatePointListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            // 아이디가 같을 때 바꿔야됨.
+            User myTempUserInfo = dataSnapshot.getValue(User.class);
+            if(myUserInfo.id.equals(myTempUserInfo.id)){
+                Intent intent = new Intent("changePointState");
+                intent.putExtra("changePointState", myTempUserInfo);
+                mContext.sendBroadcast(intent);
+            }
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    public void setChangeStatePointListener(final User myUserInfo){
+        //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStateUserListener);
+        mUsersDatabaseReference.addChildEventListener(ChangeStateUserListener);
+    }
+
+    public void deleteChangeStatePointListener(final User myUserInfo){
+        //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStateUserListener);
+        mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
+    }
+
 }
