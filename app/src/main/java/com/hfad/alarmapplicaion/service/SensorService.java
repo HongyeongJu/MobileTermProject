@@ -81,8 +81,9 @@ public class SensorService extends Service implements SensorEventListener {
             }
             public void onFinish() {
                // Toast.makeText(getApplicationContext(), cnt, Toast.LENGTH_SHORT).show();
-                if(cnt > 20) {
+                if(cnt > 12) {
                     mFirebaseSystem.changeWakeUpState(roomTitle, userId);
+                    mFirebaseSystem.addPoint(500,userId);
                 }
                 Log.d("ODH_cnt", String.valueOf(cnt));
                 onDestroy();

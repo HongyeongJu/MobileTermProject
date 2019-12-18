@@ -691,7 +691,32 @@ public class FirebaseSystem  {
             }
         });
     }
+    public void addPoint(final int p, final String userId){
+        mUsersDatabaseReference.child(userId).child("point").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int point = dataSnapshot.getValue(Integer.class) + p;
+                dataSnapshot.getRef().setValue(point);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        mUsersDatabaseReference.child(userId).child("totalPoint").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int totalPoint = dataSnapshot.getValue(Integer.class) + p;
+                dataSnapshot.getRef().setValue(totalPoint);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void initializeWakeUpState(final String chatTitle){
         mChatRoomDatabaseReference.child(chatTitle).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

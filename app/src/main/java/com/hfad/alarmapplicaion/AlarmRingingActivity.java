@@ -19,6 +19,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
     private FirebaseSystem mFirebaseSystem;
     String roomTitle;
     String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

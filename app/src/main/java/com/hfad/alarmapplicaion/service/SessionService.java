@@ -204,6 +204,7 @@ public class SessionService extends Service {
                     intent.putExtra("Time",strtime);
                     intent.putExtra("chatTitle", chat.roomTitle);      // 현재 알람방 정보를 intent에 넘겨준다.
                     intent.putExtra("myUserId", myUserInfo.id);
+
                     //cnt 대신 리퀘스트코드
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)chat.number, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
