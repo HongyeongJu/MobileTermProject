@@ -72,11 +72,11 @@ public class SensorService extends Service implements SensorEventListener {
         return  null;
     }
     private void countDownTimer() {
-        countDownTimer = new CountDownTimer(11000,1000) {
+        countDownTimer = new CountDownTimer(10000,1000) {
             public void onTick(long millisUntilFinished) {
 
                 count--;
-                //Toast.makeText(getApplicationContext(), count, Toast.LENGTH_SHORT).show();
+                Log.d("ODH_count", String.valueOf(count));
 
             }
             public void onFinish() {
@@ -99,6 +99,7 @@ public class SensorService extends Service implements SensorEventListener {
         if (sensorManager != null)
             sensorManager.unregisterListener(this);
         Toast.makeText(getApplicationContext(), "종료"+cnt+"흔들었습니다.", Toast.LENGTH_SHORT).show();
+        Log.d("ODH","Sensor Finish");
         try{
             countDownTimer.cancel();
         }catch (Exception e){
@@ -137,6 +138,7 @@ public class SensorService extends Service implements SensorEventListener {
                     cnt++;
                     //Toast.makeText(this.getApplicationContext(),"흔들렸다!",Toast.LENGTH_SHORT);
                     //text.setText(String.format("%d",cnt));
+                    Log.d("ODH_cnt_shake", String.valueOf(cnt));
                 }
 
                 lastX = event.values[DATA_X];
