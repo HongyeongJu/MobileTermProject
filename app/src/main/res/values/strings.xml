@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AlarmApplicaion</string>
+    <string name="app_name">공동알람</string>
     <string name="tab_text_1">알람</string>
     <string name="tab_text_2">나의 알람</string>
     <string name="tab_text_3">상점</string>
