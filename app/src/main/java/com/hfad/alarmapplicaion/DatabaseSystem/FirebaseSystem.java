@@ -552,16 +552,6 @@ public class FirebaseSystem  {
         });
     }
 
-    public void getMyPoint(final User myUserInfo){
-        try {
-            Intent intent = new Intent("getMyPoint");
-            intent.putExtra("getMyPoint", myUserInfo.point);
-            mContext.sendBroadcast(intent);
-        }catch (Exception e){
-
-        }
-    }
-
     public void usePoint(final int p, final String userId) {
         mUsersDatabaseReference.child(userId).child("point").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -569,8 +559,8 @@ public class FirebaseSystem  {
                 int point = dataSnapshot.getValue(Integer.class) - p;
                 dataSnapshot.getRef().setValue(point);
 
-                Intent intent = new Intent("changeUserState");
-                mContext.sendBroadcast(intent);
+                /*Intent intent = new Intent("changePointState");
+                mContext.sendBroadcast(intent);*/
             }
 
             @Override
@@ -812,6 +802,8 @@ public class FirebaseSystem  {
         mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
     }
 
+    // 포인트 변경-------------------------------------------------------------------
+
     ChildEventListener ChangeStatePointListener = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -846,13 +838,13 @@ public class FirebaseSystem  {
     };
 
     public void setChangeStatePointListener(final User myUserInfo){
-        //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStateUserListener);
-        mUsersDatabaseReference.addChildEventListener(ChangeStateUserListener);
+        //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStatePointListener);
+        mUsersDatabaseReference.addChildEventListener(ChangeStatePointListener);
     }
 
     public void deleteChangeStatePointListener(final User myUserInfo){
-        //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStateUserListener);
-        mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
+        //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStatePointListener);
+        mUsersDatabaseReference.removeEventListener(ChangeStatePointListener);
     }
 
 }
