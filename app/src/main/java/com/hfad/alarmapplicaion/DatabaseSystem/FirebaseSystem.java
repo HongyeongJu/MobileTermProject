@@ -552,18 +552,25 @@ public class FirebaseSystem  {
         });
     }
 
-    public void getMyPoint(final User myUserInfo){
-        try {
-            Intent intent = new Intent("getMyPoint");
-            intent.putExtra("getMyPoint", myUserInfo.point);
-            mContext.sendBroadcast(intent);
-        }catch (Exception e){
+    public void usePoint(final int p, final String userId) {
+        mUsersDatabaseReference.child(userId).child("point").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int point = dataSnapshot.getValue(Integer.class) - p;
+                dataSnapshot.getRef().setValue(point);
 
-        }
+                /*Intent intent = new Intent("changePointState");
+                mContext.sendBroadcast(intent);*/
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-
-    //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
+        //addTurnOffListener, deleteTurnOffListener 메소드만을 위한 리스너 객체
     ChildEventListener addTurnOffListener1 = new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -574,11 +581,15 @@ public class FirebaseSystem  {
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             //Log.d("dataSnapShot" ,dataSnapshot.getRef().toString());
             // 주소값은 https://alarmapplicaion.firebaseio.com/chatroom/hjhgg/peoples 이다. 즉 people 값의 어레이리스트로 받으면 된다.
-            GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
-            ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
-            Intent intent = new Intent("updateMemeberState");
-            intent.putExtra("updateMemeberState", peoples);
-            mContext.sendBroadcast(intent);
+            try{
+                GenericTypeIndicator<List<RoomPeople>> t = new GenericTypeIndicator<List<RoomPeople>>() {};     // 어레이리스트로 만들기 위해서
+                ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)dataSnapshot.getValue(t);
+                Intent intent = new Intent("updateMemeberState");
+                intent.putExtra("updateMemeberState", peoples);
+                mContext.sendBroadcast(intent);
+            }catch(Exception e){
+
+            }
         }
 
         @Override
@@ -790,4 +801,50 @@ public class FirebaseSystem  {
         //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStateUserListener);
         mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
     }
+
+    // 포인트 변경-------------------------------------------------------------------
+
+    ChildEventListener ChangeStatePointListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            // 아이디가 같을 때 바꿔야됨.
+            User myTempUserInfo = dataSnapshot.getValue(User.class);
+            if(myUserInfo.id.equals(myTempUserInfo.id)){
+                Intent intent = new Intent("changePointState");
+                intent.putExtra("changePointState", myTempUserInfo);
+                mContext.sendBroadcast(intent);
+            }
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    public void setChangeStatePointListener(final User myUserInfo){
+        //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStatePointListener);
+        mUsersDatabaseReference.addChildEventListener(ChangeStatePointListener);
+    }
+
+    public void deleteChangeStatePointListener(final User myUserInfo){
+        //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStatePointListener);
+        mUsersDatabaseReference.removeEventListener(ChangeStatePointListener);
+    }
+
 }
