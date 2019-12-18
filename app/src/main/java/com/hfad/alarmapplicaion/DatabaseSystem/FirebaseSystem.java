@@ -756,10 +756,13 @@ public class FirebaseSystem  {
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            User myUserInfo = dataSnapshot.getValue(User.class);
-            Intent intent = new Intent("changeUserState");
-            intent.putExtra("changeUserState", myUserInfo);
-            mContext.sendBroadcast(intent);
+            // 아이디가 같을 때 바꿔야됨.
+            User myTempUserInfo = dataSnapshot.getValue(User.class);
+            if(myUserInfo.id.equals(myTempUserInfo.id)){
+                Intent intent = new Intent("changeUserState");
+                intent.putExtra("changeUserState", myTempUserInfo);
+                mContext.sendBroadcast(intent);
+            }
         }
 
         @Override
@@ -779,7 +782,6 @@ public class FirebaseSystem  {
     };
 
     public void setChangeStateUserListener(final User myUserInfo){
-        this.myUserInfo = myUserInfo;
         //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStateUserListener);
         mUsersDatabaseReference.addChildEventListener(ChangeStateUserListener);
     }
