@@ -181,12 +181,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action.equals("changeUserState")) {
-                User myUserInfo = (User)intent.getSerializableExtra("changeUserState");
-                nav_header_id_text.setText(myUserInfo.id);
-                nav_header_point_text.setText(String.valueOf(myUserInfo.point));
-                nav_header_total_point_text.setText(String.valueOf(myUserInfo.totalPoint));
+            try {
+                String action = intent.getAction();
+                if (action.equals("changeUserState")) {
+                    User myUserInfo = (User) intent.getSerializableExtra("changeUserState");
+                    nav_header_id_text.setText(myUserInfo.id);
+                    nav_header_point_text.setText(String.valueOf(myUserInfo.point));
+                    nav_header_total_point_text.setText(String.valueOf(myUserInfo.totalPoint));
+                }
+            }catch(Exception e){
+
             }
         }
     };
