@@ -75,6 +75,9 @@ public class AlarmService extends Service {
         stopSelf();*/
         Log.d("ODH","Service");
         return START_NOT_STICKY;
+
+
+
     }
     @Override
     public void onDestroy(){

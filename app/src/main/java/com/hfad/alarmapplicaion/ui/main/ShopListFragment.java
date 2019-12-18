@@ -2,7 +2,6 @@ package com.hfad.alarmapplicaion.ui.main;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +44,7 @@ public class ShopListFragment extends Fragment implements UpdateListView {
     String[] shopItemImageUrlList = null;
 
     String ItemPrice;
+    int IntegerItemPrice;
     String ItemName;
     int userPoint;
 
@@ -61,7 +60,6 @@ public class ShopListFragment extends Fragment implements UpdateListView {
 
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
         mFirebaseSystem.getShopListItem();
-        mFirebaseSystem.getMyPoint(myUserInfo);
 
         myUserInfo = ((MainActivity)getActivity()).myUserInfo;
 
@@ -73,7 +71,7 @@ public class ShopListFragment extends Fragment implements UpdateListView {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 ItemName = shops.get(position).itemName;
                 ItemPrice = shops.get(position).price;
-                userPoint = myUserInfo.point;
+                //userPoint = myUserInfo.point;
                 buyDialogShow();
             }
         });
@@ -82,14 +80,17 @@ public class ShopListFragment extends Fragment implements UpdateListView {
         filter.addAction("shopList");
         getContext().registerReceiver(broadcastReceiver, filter);
 
-        IntentFilter pointfilter = new IntentFilter();
-        filter.addAction("myPoint");
-        getContext().registerReceiver(broadcastReceiver, pointfilter);
+        IntentFilter pointStatefilter = new IntentFilter();
+        pointStatefilter.addAction("changePointState");
+        getContext().registerReceiver(broadcastReceiver, pointStatefilter);
+        mFirebaseSystem.setChangeStatePointListener(myUserInfo);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     public class ShopAdapter extends BaseAdapter {
@@ -147,41 +148,32 @@ public class ShopListFragment extends Fragment implements UpdateListView {
             holder.shopItemImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.shopItemImage.setPadding(8, 8, 8, 8);
 
-            /*rowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    // -------------- 상점 아이템 클릭 ----------------
-                    //buyDialogShow();
-                    Toast.makeText(getContext(), ItemPrice + ItemName, Toast.LENGTH_SHORT).show();
-                }
-            });*/
             return rowView;
         }
     }
 
     public void buyItem(){
         String tmpPrice = ItemPrice.replace(",", "");
-        int itemPrice = Integer.parseInt(tmpPrice);
-        if(userPoint >= itemPrice){
+        IntegerItemPrice = Integer.parseInt(tmpPrice);
+        if(myUserInfo.point >= IntegerItemPrice && myUserInfo.point > 0){
             Toast.makeText(getContext(), "구매 성공!", Toast.LENGTH_SHORT).show();
             /*---디비로 포인트 변경 값 전송? 설정?---*/
+            mFirebaseSystem.usePoint(IntegerItemPrice, myUserInfo.id);
         } else{
-            Toast.makeText(getContext(), "포인트가 부족합니다. 나의 포인트 잔액 : " + userPoint, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "포인트가 부족합니다. 나의 포인트 잔액 : " + myUserInfo.point, Toast.LENGTH_SHORT).show();
         }
         ItemPrice = null;
     }
 
     public void buyDialogShow() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(ItemName + " 구매!");
         builder.setMessage(ItemName + " 을(를) 정말 구매하시겠습니까? \n" + "구매시 " + ItemPrice + "p가 차감됩니다.");
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        buyItem();
-                    }
-                });
+            public void onClick(DialogInterface dialog, int which) {
+                buyItem();
+            }
+        });
         builder.setNegativeButton("아니오",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -200,9 +192,9 @@ public class ShopListFragment extends Fragment implements UpdateListView {
                 //Toast.makeText(getContext(), shops.get(0).itemName, Toast.LENGTH_SHORT).show();
                 gridview.setAdapter(new ShopAdapter(getContext(), shops));
             }
-            else if(action.equals("getMyPoint")) {
-                Bundle bundle = intent.getExtras();
-                userPoint = bundle.getInt("getMyPoint");
+            else if(action.equals("changePointState")){
+                myUserInfo = (User)intent.getSerializableExtra("changePointState");
+                //Toast.makeText(getContext(), "5d" + myUserInfo.point, Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -212,6 +204,7 @@ public class ShopListFragment extends Fragment implements UpdateListView {
         super.onDestroyView();
 
         getContext().unregisterReceiver(broadcastReceiver);
+        mFirebaseSystem.deleteChangeStatePointListener(myUserInfo);
     }
 
     @Override
