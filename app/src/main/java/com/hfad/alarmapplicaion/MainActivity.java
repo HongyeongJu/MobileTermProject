@@ -78,11 +78,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         TextView nav_header_id_text = (TextView)nav_header_view.findViewById(R.id.nav_user_id);
         TextView nav_header_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_point);
+        TextView nav_header_total_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_total_point);
         ImageView nav_header_image = (ImageView)nav_header_view.findViewById(R.id.nv_image);
 
+        nav_header_total_point_text.setText(String.valueOf(myUserInfo.totalPoint));
         nav_header_id_text.setText(myUserInfo.id);
         nav_header_point_text.setText(String.valueOf(myUserInfo.point));
-        if(myUserInfo.gender){
+        if(!myUserInfo.gender){
             nav_header_image.setImageResource(R.drawable.man);
         }else{
             nav_header_image.setImageResource(R.drawable.woman);
@@ -99,12 +101,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                         stopService(stopSessionServiceIntent);
                         finish();
                         break;
-                    case R.id.nav_seton:
 
-                        break;
-                    case R.id.nav_setoff:
-
-                        break;
                 }
 
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);

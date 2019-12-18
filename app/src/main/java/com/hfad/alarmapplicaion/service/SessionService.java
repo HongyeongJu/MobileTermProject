@@ -213,9 +213,6 @@ public class SessionService extends Service {
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
                 }
-
-
-
             }
 
             Log.i("calendar Time", String.valueOf(calendar.getTimeInMillis()));
