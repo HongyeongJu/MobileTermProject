@@ -48,7 +48,9 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         Log.d("ODH_SENSOR","SENSOR");
+        count=10;
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerormeterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

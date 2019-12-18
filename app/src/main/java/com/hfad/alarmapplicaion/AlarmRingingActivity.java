@@ -75,7 +75,9 @@ public class AlarmRingingActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), SensorService.class);
                     intent.putExtra("roomTitle", roomTitle);
                     intent.putExtra("userId", userId);
+                    stopService(new Intent(AlarmRingingActivity.this,AlarmService.class));
                     startService(intent);
+
                     close();
                     break;
             }

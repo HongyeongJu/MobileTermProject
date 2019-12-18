@@ -61,10 +61,11 @@ public class SessionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         // 메인 액티비티로 부터 유저 데이터 값을 받아와서 저장을 한다.
-        if(myUserInfo == null){
-            myUserInfo = (User)intent.getSerializableExtra("user");
-        }
-
+        try {
+            if (myUserInfo == null) {
+                myUserInfo = (User) intent.getSerializableExtra("user");
+            }
+        }catch (Exception e){}
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
         //Log.d("service", "service");
 
