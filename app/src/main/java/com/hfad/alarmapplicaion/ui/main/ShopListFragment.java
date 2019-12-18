@@ -62,7 +62,6 @@ public class ShopListFragment extends Fragment implements UpdateListView {
 
         mFirebaseSystem = FirebaseSystem.getInstance(getContext());
         mFirebaseSystem.getShopListItem();
-        mFirebaseSystem.getMyPoint(myUserInfo);
 
         myUserInfo = ((MainActivity)getActivity()).myUserInfo;
 
@@ -74,7 +73,7 @@ public class ShopListFragment extends Fragment implements UpdateListView {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 ItemName = shops.get(position).itemName;
                 ItemPrice = shops.get(position).price;
-                userPoint = myUserInfo.point;
+                //userPoint = myUserInfo.point;
                 buyDialogShow();
             }
         });
@@ -83,15 +82,10 @@ public class ShopListFragment extends Fragment implements UpdateListView {
         filter.addAction("shopList");
         getContext().registerReceiver(broadcastReceiver, filter);
 
-        IntentFilter pointfilter = new IntentFilter();
-        filter.addAction("myPoint");
-        getContext().registerReceiver(broadcastReceiver, pointfilter);
-
-        IntentFilter userStatefilter = new IntentFilter();
-        filter.addAction("changePointState");
-        getContext().registerReceiver(broadcastReceiver, userStatefilter);
-        mFirebaseSystem.setChangeStateUserListener(myUserInfo);
-
+        IntentFilter pointStatefilter = new IntentFilter();
+        pointStatefilter.addAction("changePointState");
+        getContext().registerReceiver(broadcastReceiver, pointStatefilter);
+        mFirebaseSystem.setChangeStatePointListener(myUserInfo);
     }
 
     @Override
@@ -163,12 +157,12 @@ public class ShopListFragment extends Fragment implements UpdateListView {
     public void buyItem(){
         String tmpPrice = ItemPrice.replace(",", "");
         IntegerItemPrice = Integer.parseInt(tmpPrice);
-        if(userPoint >= IntegerItemPrice){
+        if(myUserInfo.point >= IntegerItemPrice && myUserInfo.point > 0){
             Toast.makeText(getContext(), "구매 성공!", Toast.LENGTH_SHORT).show();
             /*---디비로 포인트 변경 값 전송? 설정?---*/
             mFirebaseSystem.usePoint(IntegerItemPrice, myUserInfo.id);
         } else{
-            Toast.makeText(getContext(), "포인트가 부족합니다. 나의 포인트 잔액 : " + userPoint, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "포인트가 부족합니다. 나의 포인트 잔액 : " + myUserInfo.point, Toast.LENGTH_SHORT).show();
         }
         ItemPrice = null;
     }
@@ -200,13 +194,9 @@ public class ShopListFragment extends Fragment implements UpdateListView {
                 //Toast.makeText(getContext(), shops.get(0).itemName, Toast.LENGTH_SHORT).show();
                 gridview.setAdapter(new ShopAdapter(getContext(), shops));
             }
-            else if(action.equals("getMyPoint")) {
-                Bundle bundle = intent.getExtras();
-                userPoint = bundle.getInt("getMyPoint");
-            }
             else if(action.equals("changePointState")){
-                User myUserInfo = (User)intent.getSerializableExtra("changePointState");
-                userPoint = myUserInfo.point;
+                myUserInfo = (User)intent.getSerializableExtra("changePointState");
+                Toast.makeText(getContext(), "5d" + myUserInfo.point, Toast.LENGTH_SHORT).show();
             }
         }
     };
