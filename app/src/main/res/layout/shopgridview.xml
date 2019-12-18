@@ -7,15 +7,19 @@
     <ImageView
         android:id="@+id/shopItemImage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
     <TextView
         android:id="@+id/shopItemPrice"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
     <TextView
+        android:id="@+id/shopItemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/shopItemName"/>
+        android:layout_gravity="center" />
 
 </LinearLayout>
