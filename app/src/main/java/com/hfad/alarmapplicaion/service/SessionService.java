@@ -20,8 +20,10 @@ import com.hfad.alarmapplicaion.MainActivity;
 import com.hfad.alarmapplicaion.model.ChatRoom;
 import com.hfad.alarmapplicaion.model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 // 로그인 되면 로그인 세션을 유지하는 서비스이다.
@@ -126,6 +128,8 @@ public class SessionService extends Service {
                 Log.i("인텐트 호출", "인텐트 호출");
                 //intent.getExtras().getString("Time");
                 sIntent.putExtra("Time1",intent.getExtras().getString("Time"));
+                sIntent.putExtra("chatTitle1", intent.getExtras().getString("chatTitle"));
+                sIntent.putExtra("myUserId", intent.getExtras().getString("myUserId"));
 
                 // Oreo(26) 버전 이후부터는 Background 에서 실행을 금지하기 때문에 Foreground 에서 실행해야 함
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -175,7 +179,16 @@ public class SessionService extends Service {
                         String.valueOf(chat.minute)+ "분" +
                         String.valueOf(0) + "초");
                 calendar.set(year, month, calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
+
+                SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
+                strtime=format.format(calendar.getTime());
+                // Receiver 설정
+
+                Log.i("ChatTitle", chat.roomTitle);
                 Intent intent = new Intent("AlarmReceiver");
+                intent.putExtra("Time",strtime);
+                intent.putExtra("chatTitle", chat.roomTitle);      // 현재 알람방 정보를 intent에 넘겨준다.
+                intent.putExtra("myUserId", myUserInfo.id);
                 //cnt 대신 리퀘스트코드
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)chat.number, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
