@@ -256,6 +256,8 @@ public class FirebaseSystem  {
             @Override
             public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
                 Toast.makeText(mContext,"방이 등록되었습니다. " ,Toast.LENGTH_SHORT).show();
+
+                dataSnapshot.child(id).child("peoples").child("1").getRef().removeValue();
                 updateMyAlarmLists();
             }
         });
@@ -681,5 +683,40 @@ public class FirebaseSystem  {
     }
     public void deleteAddChatRoomListener(){
         mChatRoomDatabaseReference.removeEventListener(addChatRoomListener);
+    }
+
+    public void changeWakeUpState(final String chatTitle, final String userId){
+        mChatRoomDatabaseReference.child(chatTitle).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    RoomPeople people = (RoomPeople)postSnapShot.getValue(RoomPeople.class);
+                    if(userId.equals(people.id)){
+                        postSnapShot.child("isTurnOff").getRef().setValue(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void initializeWakeUpState(final String chatTitle){
+        mChatRoomDatabaseReference.child(chatTitle).child("peoples").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot : dataSnapshot.getChildren()){
+                    postSnapShot.child("isTurnOff").getRef().setValue(false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

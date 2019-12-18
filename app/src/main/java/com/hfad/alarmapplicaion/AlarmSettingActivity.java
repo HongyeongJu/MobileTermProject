@@ -90,7 +90,8 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         if(v.getId() == R.id.settingbutton ){
             String title = mRoomName.getText().toString();
-            if(title != null){
+            String tempTitle = title.replace(" ", "");
+            if(!tempTitle.equals("")){
                 int hour = hourOfDay;
                 int min = minute;
                 String owner = myUserInfo.id;
