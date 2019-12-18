@@ -48,6 +48,7 @@ public class SessionService extends Service {
         filter.addAction("startMainActivity");
         filter.addAction("updateMyAlarmList");
         filter.addAction("AlarmReceiver");
+        filter.addAction("changeUserState");
         registerReceiver(receiver, filter);
 
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
@@ -101,16 +102,19 @@ public class SessionService extends Service {
                 intent1.putExtra("user", myUserInfo);
                 sendBroadcast(intent1);
             }else if(action.equals("myAlarmList")){     // 여기서 내가 참여한 리스트를 받는다. 그 리스트들을 나의 데이터베이스에 저장한다.
-                Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "현재 내가 참여한 리스트 불러오기서비스", Toast.LENGTH_SHORT).show();
                 chats = (ArrayList<ChatRoom>)intent.getSerializableExtra("myAlarmList");
+                /*
                 for(ChatRoom chat : chats){
-                    Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), chat.roomTitle, Toast.LENGTH_SHORT).show();
                 }
+
+                 */
 
                 setAlarm();
             }else if(action.equals("startMainActivity")){
                 // MainActivity 출력하도록함.
-                Toast.makeText(getApplicationContext(),"서비스를 통해 실행", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"서비스를 통해 실행", Toast.LENGTH_SHORT).show();
                 Intent startIntent = new Intent(getApplicationContext(), MainActivity.class);
                 startIntent.putExtra("user", myUserInfo);
                 startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -124,7 +128,7 @@ public class SessionService extends Service {
             }else if(action.equals("AlarmReceiver")){       // 알람 리시버를 받으면.
                 Log.i("알람리시버 받음", "알람리시버 받음");
 
-                Toast.makeText(getApplicationContext(), "알람리비서 받음 ", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "알람리비서 받음 ", Toast.LENGTH_SHORT).show();
                 Intent sIntent = new Intent(getApplicationContext(), AlarmService.class);
 
                 Log.i("인텐트 호출", "인텐트 호출");
@@ -139,7 +143,8 @@ public class SessionService extends Service {
                 } else {
                     getApplicationContext().startService(sIntent);
                 }
-
+            }else if(action.equals("changeUserState")){
+                myUserInfo = (User)intent.getSerializableExtra("changeUserState");
 
             }
         }

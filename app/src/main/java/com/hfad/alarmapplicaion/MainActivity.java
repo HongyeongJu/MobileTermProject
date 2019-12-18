@@ -1,6 +1,9 @@
 package com.hfad.alarmapplicaion;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +23,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
 import com.hfad.alarmapplicaion.model.User;
 import com.hfad.alarmapplicaion.service.SessionService;
 import com.hfad.alarmapplicaion.ui.main.SectionsPagerAdapter;
@@ -29,15 +33,18 @@ import com.hfad.alarmapplicaion.ui.main.SectionsPagerAdapter;
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     FirebaseDatabase firebaseDatabase =FirebaseDatabase.getInstance();
-
+    FirebaseSystem mFirebaseSystem;
 
     public User myUserInfo;
-
+    TextView nav_header_id_text;
+    TextView nav_header_point_text;
+    TextView nav_header_total_point_text;
     ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -76,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         // 네비게이션 드러우러에 있는 Header값 처리하기
         View nav_header_view = navigationView.getHeaderView(0);
 
-        TextView nav_header_id_text = (TextView)nav_header_view.findViewById(R.id.nav_user_id);
-        TextView nav_header_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_point);
-        TextView nav_header_total_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_total_point);
+        nav_header_id_text = (TextView)nav_header_view.findViewById(R.id.nav_user_id);
+        nav_header_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_point);
+        nav_header_total_point_text = (TextView)nav_header_view.findViewById(R.id.nav_user_total_point);
         ImageView nav_header_image = (ImageView)nav_header_view.findViewById(R.id.nv_image);
 
         nav_header_total_point_text.setText(String.valueOf(myUserInfo.totalPoint));
@@ -109,6 +116,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 return true;
             }
         });
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("changeUserState");
+        registerReceiver(receiver, filter);
+
+        mFirebaseSystem.setChangeStateUserListener(myUserInfo);
+
     }
 
     @Override
@@ -162,4 +176,27 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             super.onBackPressed();
         }
     }
+
+    // 파이어 베이스로 User 값이 수정되었을 때 다시 갱신해서 받아오기.
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals("changeUserState")) {
+                User myUserInfo = (User)intent.getSerializableExtra("changeUserState");
+                nav_header_id_text.setText(myUserInfo.id);
+                nav_header_point_text.setText(String.valueOf(myUserInfo.point));
+                nav_header_total_point_text.setText(String.valueOf(myUserInfo.totalPoint));
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+        mFirebaseSystem.deleteChangeStateUserListener(myUserInfo);
+    }
+
+
 }

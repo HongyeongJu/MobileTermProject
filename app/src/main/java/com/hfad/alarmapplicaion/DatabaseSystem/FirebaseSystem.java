@@ -508,7 +508,7 @@ public class FirebaseSystem  {
                             ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>)postSnapshot.child("peoples").getValue(t);
                             for(RoomPeople people : peoples ){  //전부 검사
                                 if(people.id.equals(myUserInfo.id)){        // 같다면. 채팅방의 정보를 다 넘겨준다.
-                                    Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
                                     ChatRoom chat = postSnapshot.getValue(ChatRoom.class);
                                     myChats.add(chat);        // 내가 참여한 리스트에 추가한다.
                                 }
@@ -629,7 +629,7 @@ public class FirebaseSystem  {
 
             for(RoomPeople people : arrayList){
                 //Log.i("peoples", String.valueOf(people.id));
-                Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
                 if(people.id.equals(myUserInfo.id)){
                     isHere = true;              // 참여하고 있으면
                 }
@@ -651,7 +651,7 @@ public class FirebaseSystem  {
 
             for(RoomPeople people : arrayList){
                 //Log.i("peoples", String.valueOf(people.id));
-                Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, people.id, Toast.LENGTH_SHORT).show();
                 if(people.id.equals(myUserInfo.id)){
                     isHere = true;              // 참여하고 있으면
                 }
@@ -718,5 +718,49 @@ public class FirebaseSystem  {
 
             }
         });
+    }
+
+
+    // User 값이 바뀌면 갱신하도록 하는 리스너 등록
+
+    ChildEventListener ChangeStateUserListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            User myUserInfo = dataSnapshot.getValue(User.class);
+            Intent intent = new Intent("changeUserState");
+            intent.putExtra("changeUserState", myUserInfo);
+            mContext.sendBroadcast(intent);
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
+    public void setChangeStateUserListener(final User myUserInfo){
+        this.myUserInfo = myUserInfo;
+        //mUsersDatabaseReference.child(myUserInfo.id).addChildEventListener(ChangeStateUserListener);
+        mUsersDatabaseReference.addChildEventListener(ChangeStateUserListener);
+    }
+
+    public void deleteChangeStateUserListener(final User myUserInfo){
+        //mUsersDatabaseReference.child(myUserInfo.id).removeEventListener(ChangeStateUserListener);
+        mUsersDatabaseReference.removeEventListener(ChangeStateUserListener);
     }
 }
