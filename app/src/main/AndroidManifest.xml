@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hfad.alarmapplicaion">
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -11,46 +9,55 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AlarmUpdateActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".AlarmRingingActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".AlarmRoomActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".SignUpActivity"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".LoginActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AlarmSettingActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".AlarmUpdateActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".AlarmRingingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AlarmRoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".AlarmSettingActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.SessionService"
             android:enabled="true"
-            android:exported="true"></service>
-
+            android:exported="true" />
         <service
             android:name=".AlarmService"
-            android:enabled="true"
-            />
-
+            android:enabled="true" />
         <service
             android:name=".service.SensorService"
             android:enabled="true"
-            android:exported="true"></service>
-
+            android:exported="true" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>
