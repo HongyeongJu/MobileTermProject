@@ -19,6 +19,4 @@ public class Shop implements Serializable {
         this.price = null;
         this.url = null;
     }
-
-
 }
