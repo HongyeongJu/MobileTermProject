@@ -46,11 +46,10 @@
             android:enabled="true"
             />
 
-        <receiver
-            android:name=".AlarmReceiver"
+        <service
+            android:name=".service.SensorService"
             android:enabled="true"
-            android:exported="false"
-            />
+            android:exported="true"></service>
 
     </application>
 

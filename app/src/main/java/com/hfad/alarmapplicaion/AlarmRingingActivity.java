@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hfad.alarmapplicaion.DatabaseSystem.FirebaseSystem;
+import com.hfad.alarmapplicaion.service.SensorService;
 
 public class AlarmRingingActivity extends AppCompatActivity {
 
@@ -69,8 +70,10 @@ public class AlarmRingingActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.btnClose:
                     // 알람 종료
-
-                    mFirebaseSystem.changeWakeUpState(roomTitle, userId);
+                    Intent intent = new Intent(getApplicationContext(), SensorService.class);
+                    intent.putExtra("roomTitle", roomTitle);
+                    intent.putExtra("userId", userId);
+                    startService(intent);
                     close();
                     break;
             }

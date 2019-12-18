@@ -98,7 +98,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
                 String phoneNumber = myUserInfo.phoneNumber;
                 List<RoomPeople> people= new ArrayList<>();
                 people.add(new RoomPeople(owner, false, myUserInfo.gender, phoneNumber));       // 방장은 무조건 참여하게된다.
-                people.add(new RoomPeople("테스트", false, true, "000-0000-0000"));
+                //people.add(new RoomPeople("테스트", false, true, "000-0000-0000"));
 
                 ChatRoom chatRoom = new ChatRoom(title, hour, min, owner, people, days[0], days[1], days[2], days[3], days[4], days[5], days[6]);
 
