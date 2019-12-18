@@ -35,6 +35,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
         text.setText(start);
         // 알람음 재생
         this.mediaPlayer = MediaPlayer.create(this,R.raw.ouu);
+        mediaPlayer.setLooping(true);
         this.mediaPlayer.start();
 
         findViewById(R.id.btnClose).setOnClickListener(mClickListener);

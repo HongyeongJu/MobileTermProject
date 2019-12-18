@@ -167,34 +167,53 @@ public class SessionService extends Service {
 
 
             Log.i("Calendar.getInstance()", String.valueOf(Calendar.getInstance()));
+            boolean correct= false;
+            int day_of_week= calendar.get(Calendar.DAY_OF_WEEK);
+            Log.i("Calendar.getInstance()", String.valueOf(Calendar.getInstance()));
             if (calendar.before(todayCalendar)) {
 
                 Log.i("Alarm Time", "알람시간이 현재시간보다 이전 일 수 없음.");
-            }else {
-                // 현재 시간 이후로 알람을 설정한다.
-                Log.i("calendar time", String.valueOf(year) + "년" +
-                        String.valueOf(month + 1) +"월" +
-                        String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "일" +
-                        String.valueOf(chat.hour) + "시" +
-                        String.valueOf(chat.minute)+ "분" +
-                        String.valueOf(0) + "초");
-                calendar.set(year, month, calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
+            }
+            else
+            { Log.d("ODH_day", String.valueOf(day_of_week));
+                if(day_of_week==1 && chat.sunday){ correct=true;}
+                else if(day_of_week==2 && chat.monday){ correct=true;}
+                else if(day_of_week==3 && chat.tuesday){ correct=true;}
+                else if(day_of_week==4 && chat.wednesday){ correct=true;}
+                else if(day_of_week==5 && chat.thursday){ correct=true;}
+                else if(day_of_week==6 && chat.friday){ correct=true;}
+                else if(day_of_week==7 && chat.saturday){ correct=true;}
+                else{correct=false;}
 
-                SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
-                strtime=format.format(calendar.getTime());
-                // Receiver 설정
+                if(correct) {
+                    // 현재 시간 이후로 알람을 설정한다.
+                    Log.i("calendar time", String.valueOf(year) + "년" +
+                            String.valueOf(month + 1) +"월" +
+                            String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + "일" +
+                            String.valueOf(chat.hour) + "시" +
+                            String.valueOf(chat.minute)+ "분" +
+                            String.valueOf(0) + "초");
+                    calendar.set(year, month, calendar.get(Calendar.DAY_OF_MONTH),chat.hour, chat.minute, 0);
 
-                Log.i("ChatTitle", chat.roomTitle);
-                Intent intent = new Intent("AlarmReceiver");
-                intent.putExtra("Time",strtime);
-                intent.putExtra("chatTitle", chat.roomTitle);      // 현재 알람방 정보를 intent에 넘겨준다.
-                intent.putExtra("myUserId", myUserInfo.id);
-                //cnt 대신 리퀘스트코드
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)chat.number, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm", Locale.getDefault());
+                    strtime=format.format(calendar.getTime());
+                    // Receiver 설정
 
-                // 알람 설정
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
+                    Log.i("ChatTitle", chat.roomTitle);
+                    Intent intent = new Intent("AlarmReceiver");
+                    intent.putExtra("Time",strtime);
+                    intent.putExtra("chatTitle", chat.roomTitle);      // 현재 알람방 정보를 intent에 넘겨준다.
+                    intent.putExtra("myUserId", myUserInfo.id);
+                    //cnt 대신 리퀘스트코드
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int)chat.number, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    // 알람 설정
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, this.calendar.getTimeInMillis(), pendingIntent);
+                }
+
+
+
             }
 
             Log.i("calendar Time", String.valueOf(calendar.getTimeInMillis()));

@@ -84,7 +84,7 @@ public class SensorService extends Service implements SensorEventListener {
                 if(cnt > 20) {
                     mFirebaseSystem.changeWakeUpState(roomTitle, userId);
                 }
-                Log.d("ODH", String.valueOf(cnt));
+                Log.d("ODH_cnt", String.valueOf(cnt));
                 onDestroy();
             }
         };
@@ -94,6 +94,7 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public void onDestroy(){
         super.onDestroy();
+
         if (sensorManager != null)
             sensorManager.unregisterListener(this);
         Toast.makeText(getApplicationContext(), "종료"+cnt+"흔들었습니다.", Toast.LENGTH_SHORT).show();
