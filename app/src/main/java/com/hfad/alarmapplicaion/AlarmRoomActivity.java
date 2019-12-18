@@ -77,16 +77,17 @@ public class AlarmRoomActivity extends AppCompatActivity implements ListView.OnI
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RoomPeople people = members.get(position);
-        String phoneNumber =people.phone;
-        if(phoneNumber != null){
-            // 누르면 해당 사용자에게 전화걸기
-            String tel = "tel:" + people.phone;
-            Intent intent = new Intent("android.intent.action.DIAL", Uri.parse(tel));
-            startActivity(intent);
-        }else {
-            Toast.makeText(getApplicationContext(), "폰 번호가 없습니다.", Toast.LENGTH_SHORT).show();
+        if(!people.id.equals("")){
+            String phoneNumber =people.phone;
+            if(phoneNumber != null){
+                // 누르면 해당 사용자에게 전화걸기
+                String tel = "tel:" + people.phone;
+                Intent intent = new Intent("android.intent.action.DIAL", Uri.parse(tel));
+                startActivity(intent);
+            }else {
+                Toast.makeText(getApplicationContext(), "폰 번호가 없습니다.", Toast.LENGTH_SHORT).show();
+            }
         }
-
     }
 
 

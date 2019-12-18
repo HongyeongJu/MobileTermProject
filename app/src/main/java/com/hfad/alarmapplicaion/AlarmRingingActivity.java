@@ -38,7 +38,7 @@ public class AlarmRingingActivity extends AppCompatActivity {
         this.mediaPlayer.start();
 
         findViewById(R.id.btnClose).setOnClickListener(mClickListener);
-
+        mFirebaseSystem.initializeWakeUpState(roomTitle);           // 다 false 로 바꿔줌.
     }
 
 

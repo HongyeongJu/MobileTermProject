@@ -16,14 +16,6 @@
         android:src="@drawable/ic_launcher_background"
         />
 
-    <TextView
-        android:id="@+id/statemessagetextview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nametextview"
-        android:layout_toRightOf="@id/photoimageview"
-        android:text="상태메시지"
-        android:textSize="15dp" />
 
     <TextView
         android:id="@+id/nametextview"
@@ -32,7 +24,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/photoimageview"
         android:layout_marginBottom="10dp"
-        android:text="이름"
+        android:text=""
         android:textColor="#000000"
         android:textSize="20dp"
         android:textStyle="bold" />
