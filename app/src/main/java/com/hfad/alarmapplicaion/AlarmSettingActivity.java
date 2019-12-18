@@ -21,6 +21,7 @@ import com.hfad.alarmapplicaion.model.RoomPeople;
 import com.hfad.alarmapplicaion.model.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class AlarmSettingActivity extends AppCompatActivity implements View.OnClickListener , CompoundButton.OnCheckedChangeListener, TimePicker.OnTimeChangedListener {
@@ -41,7 +42,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
 
     int hourOfDay = 0;
     int minute = 0;
-
+    private Calendar calendar;
     private FirebaseSystem mFirebaseSystem;
 
     boolean[] days = new boolean[7];
@@ -80,7 +81,7 @@ public class AlarmSettingActivity extends AppCompatActivity implements View.OnCl
         filter.addAction("putUser");
         registerReceiver(getUserReceiver, filter);
 
-
+        this.calendar = Calendar.getInstance();
         Intent getUserIntent = new Intent("getUser");
         sendBroadcast(getUserIntent);       // 현재 유저 정보를 업데이트 하라고 부탁함.
 
