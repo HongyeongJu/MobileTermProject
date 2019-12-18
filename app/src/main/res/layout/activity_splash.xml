@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity">
+    tools:context=".SplashActivity"
+    >
 
     <ImageView
         android:id="@+id/imageView2"
@@ -16,5 +17,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.447"
-        app:srcCompat="@drawable/alarmclock" />
+        app:srcCompat="@drawable/splash" />
 </androidx.constraintlayout.widget.ConstraintLayout>
