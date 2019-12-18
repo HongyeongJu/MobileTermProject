@@ -26,7 +26,7 @@ import com.hfad.alarmapplicaion.model.Shop;
 
 import java.util.ArrayList;
 
-public class ShopListFragment extends Fragment {
+public class ShopListFragment extends Fragment implements UpdateListView {
 
     ArrayList<Shop> shops;
     FirebaseSystem mFirebaseSystem;
@@ -145,5 +145,10 @@ public class ShopListFragment extends Fragment {
         super.onDestroyView();
 
         getContext().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void updateListView() {
+
     }
 }

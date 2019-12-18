@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 
 // 프레그먼트에서 서비스에 유저 객체 정보전달 시도 -> 실패 한듯??
-public class AlarmListFragment extends Fragment implements ListView.OnItemClickListener {
+public class AlarmListFragment extends Fragment implements ListView.OnItemClickListener , UpdateListView {
 
 
     ListView listView;      // 화면에 보여질 리스트뷰
@@ -143,33 +143,39 @@ public class AlarmListFragment extends Fragment implements ListView.OnItemClickL
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
 
-        // 지금 롱 콘텍스트 메뉴에서 선택한 아이템 리스트의 위치값을 받아내기
-        AdapterView.AdapterContextMenuInfo menuIn = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        Log.d("Loginfo id:" , String.valueOf(menuIn.position));     // 위치값 찾아보기.
+        try{
+            // 지금 롱 콘텍스트 메뉴에서 선택한 아이템 리스트의 위치값을 받아내기
+            AdapterView.AdapterContextMenuInfo menuIn = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            Log.d("Loginfo id:" , String.valueOf(menuIn.position));     // 위치값 찾아보기.
 
-        ChatRoom chatRoom  = chats.get(menuIn.position);            // 채팅 룸의 객체로 받아오기
+            ChatRoom chatRoom  = chats.get(menuIn.position);            // 채팅 룸의 객체로 받아오기
 
-        //내가 방장이라면
-        if(chatRoom.owner.equals(myUserInfo.id)){
-            menu.setHeaderTitle("방장메뉴");
-            menu.add(0,0,0,"삭제");
-            menu.add(0,1,0,"수정");
-        }else { // 내가 일반 회원이라면
-            boolean isHere = false;
-            menu.setHeaderTitle("회원메뉴");
-            ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>) chatRoom.peoples;
-            for(RoomPeople people : peoples){       // 가입된 회원들을 검사해서. 지금 회원이 가입을 했는지 체크
-                if(people.id.equals(myUserInfo.id)){
-                    isHere = true;          // 지금 이 회원은 가입되어있는 상태이다.
+            //내가 방장이라면
+            if(chatRoom.owner.equals(myUserInfo.id)){
+                menu.setHeaderTitle("방장메뉴");
+                menu.add(0,0,0,"삭제");
+                menu.add(0,1,0,"수정");
+            }else { // 내가 일반 회원이라면
+                boolean isHere = false;
+                menu.setHeaderTitle("회원메뉴");
+                ArrayList<RoomPeople> peoples = (ArrayList<RoomPeople>) chatRoom.peoples;
+                for(RoomPeople people : peoples){       // 가입된 회원들을 검사해서. 지금 회원이 가입을 했는지 체크
+                    if(people.id.equals(myUserInfo.id)){
+                        isHere = true;          // 지금 이 회원은 가입되어있는 상태이다.
+                    }
                 }
-            }
-            if(isHere){     // 가입되어있는 상태이면 탈퇴를.
-                menu.add(1,1,0,"탈퇴");
-            }else {         // 가입이 안된 상태라면 가입을 한다.
-                menu.add(1, 0, 0, "가입");
-            }
+                if(isHere){     // 가입되어있는 상태이면 탈퇴를.
+                    menu.add(1,1,0,"탈퇴");
+                }else {         // 가입이 안된 상태라면 가입을 한다.
+                    menu.add(1, 0, 0, "가입");
+                }
 
+            }
+        }catch(Exception e){
+            Intent intent = new Intent("getUser"); // 다시 자신의 유저정보를 받아온다.
+            getActivity().sendBroadcast(intent);
         }
+
 
     }
 

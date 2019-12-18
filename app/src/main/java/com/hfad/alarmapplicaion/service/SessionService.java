@@ -40,10 +40,6 @@ public class SessionService extends Service {
     public void onCreate() {
         super.onCreate();
 
-
-
-
-
         IntentFilter filter = new IntentFilter();
         filter.addAction("getUser");
         filter.addAction("myAlarmList");
@@ -56,8 +52,6 @@ public class SessionService extends Service {
 
         mFirebaseSystem = FirebaseSystem.getInstance(getApplicationContext());
 
-
-
     }
 
     @Override
@@ -68,10 +62,8 @@ public class SessionService extends Service {
             myUserInfo = (User)intent.getSerializableExtra("user");
         }
 
-
         //Toast.makeText(getApplicationContext(), "서비스 시작", Toast.LENGTH_SHORT).show();
         //Log.d("service", "service");
-
 
         mFirebaseSystem.getMyAlarmRoomList(myUserInfo);
         mFirebaseSystem.setAddChatRoomListener(myUserInfo);

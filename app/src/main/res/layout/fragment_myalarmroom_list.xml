@@ -13,15 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30dp"
-        android:text="누적포인트:5000" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:text="사용가능 포인트: 3000" />
-
+        android:text="내가 가입한 리스트" />
 
 
     <ListView
