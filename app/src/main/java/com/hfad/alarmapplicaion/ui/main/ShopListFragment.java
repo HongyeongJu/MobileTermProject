@@ -196,7 +196,6 @@ public class ShopListFragment extends Fragment implements UpdateListView {
             }
             else if(action.equals("changePointState")){
                 myUserInfo = (User)intent.getSerializableExtra("changePointState");
-                Toast.makeText(getContext(), "5d" + myUserInfo.point, Toast.LENGTH_SHORT).show();
             }
         }
     };
